@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+      "test": "jest",
+      "test:web:consumer": "jest tests/consumer.pact.test.js",
+      "test:web:provider": "jest tests/provider.verify.test.js"
   },
   "repository": {
     "type": "git",
