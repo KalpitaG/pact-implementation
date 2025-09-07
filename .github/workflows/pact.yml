@@ -45,6 +45,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NODE_OPTIONS: --experimental-vm-modules
+      PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
+      PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -57,37 +59,49 @@ jobs:
       - name: Install deps
         run: npm ci --no-audit --no-fund
 
-      - name: Start provider (background)
-        run: node -e "import('./src/provider.js').then(m=>m.default.listen(3000))" &
-
-      - name: Verify against PactFlow
+      - name: Verify against PactFlow (with state resets)
         env:
-          PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
-          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
           GIT_SHA: ${{ github.sha }}
         run: |
           node - <<'JS'
+          import app, { resetData } from "./src/provider.js";
           import { Verifier } from "@pact-foundation/pact";
-          const opts = {
-            provider: "ItemsCrudAPI",
-            providerBaseUrl: "http://localhost:3000",
-            pactBrokerUrl: process.env.PACT_BROKER_BASE_URL,
-            pactBrokerToken: process.env.PACT_BROKER_TOKEN,
-            consumerVersionSelectors: [{ branch: process.env.GITHUB_REF_NAME || "main", latest: true }],
-            publishVerificationResult: true,
-            providerVersion: process.env.GIT_SHA,
-            providerBranch: process.env.GITHUB_REF_NAME || "main",
-            stateHandlers: {
-              "items exist": async () => {},
-              "the item for that id exists": async () => {},
-              "an item with that id exists and can be replaced": async () => {},
-              "an item does not exist for the specified id": async () => {},
-              "a name is provided for the item that needs to be added": async () => {},
-              "no name is given when a new item is created": async () => {},
-            },
-          };
-          await new Verifier(opts).verifyProvider();
+
+          // Start the provider in THIS process so resetData() affects it
+          const server = await new Promise((resolve) => {
+            const s = app.listen(3000, () => resolve(s));
+          });
+
+          try {
+            const opts = {
+              provider: "ItemsCrudAPI",
+              providerBaseUrl: "http://localhost:3000",
+              pactBrokerUrl: process.env.PACT_BROKER_BASE_URL,
+              pactBrokerToken: process.env.PACT_BROKER_TOKEN,
+              consumerVersionSelectors: [
+                { branch: process.env.GITHUB_REF_NAME || "main", latest: true }
+              ],
+              publishVerificationResult: true,
+              providerVersion: process.env.GIT_SHA,
+              providerBranch: process.env.GITHUB_REF_NAME || "main",
+
+              // Reset data for every provider state used in your pact
+              stateHandlers: {
+                "items exist": async () => { resetData(); },
+                "the item for that id exists": async () => { resetData(); },
+                "an item with that id exists and can be replaced": async () => { resetData(); },
+                "an item does not exist for the specified id": async () => { resetData(); },
+                "a name is provided for the item that needs to be added": async () => { resetData(); },
+                "no name is given when a new item is created": async () => { resetData(); },
+              },
+            };
+
+            await new Verifier(opts).verifyProvider();
+          } finally {
+            await new Promise((resolve) => server.close(resolve));
+          }
           JS
+
 
   gate:
     needs: provider
