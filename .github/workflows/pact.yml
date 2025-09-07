@@ -53,7 +53,8 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v4
-        with: { node-version: 20 }
+        with:
+          node-version: 20
 
       - name: Install deps
         run: npm ci --no-audit --no-fund
@@ -65,19 +66,26 @@ jobs:
           node - <<'JS'
           import app, { resetData } from "./src/provider.js";
           import { Verifier } from "@pact-foundation/pact";
+
+          // Start the provider in THIS process so resetData() affects it
           const server = await new Promise((resolve) => {
             const s = app.listen(3000, () => resolve(s));
           });
+
           try {
-            await new Verifier({
+            const opts = {
               provider: "ItemsCrudAPI",
               providerBaseUrl: "http://localhost:3000",
               pactBrokerUrl: process.env.PACT_BROKER_BASE_URL,
               pactBrokerToken: process.env.PACT_BROKER_TOKEN,
-              consumerVersionSelectors: [{ branch: process.env.GITHUB_REF_NAME || "main", latest: true }],
+              consumerVersionSelectors: [
+                { branch: process.env.GITHUB_REF_NAME || "main", latest: true }
+              ],
               publishVerificationResult: true,
               providerVersion: process.env.GIT_SHA,
               providerBranch: process.env.GITHUB_REF_NAME || "main",
+
+              // Reset data for every provider state used in your pact
               stateHandlers: {
                 "items exist": async () => { resetData(); },
                 "the item for that id exists": async () => { resetData(); },
@@ -86,20 +94,13 @@ jobs:
                 "a name is provided for the item that needs to be added": async () => { resetData(); },
                 "no name is given when a new item is created": async () => { resetData(); },
               },
-            }).verifyProvider();
+            };
+
+            await new Verifier(opts).verifyProvider();
           } finally {
-            await new Promise((r) => server.close(r));
+            await new Promise((resolve) => server.close(resolve));
           }
           JS
-
-      - name: Record provider deployment to test
-        run: |
-          npx -y @pact-foundation/pact-cli pact-broker record-deployment \
-            --pacticipant ItemsCrudAPI \
-            --version ${{ github.sha }} \
-            --environment test \
-            --broker-base-url "$PACT_BROKER_BASE_URL" \
-            --broker-token "$PACT_BROKER_TOKEN"
 
   gate:
     needs: provider
@@ -126,3 +127,6 @@ jobs:
             --environment test \
             --broker-base-url "$PACT_BROKER_BASE_URL" \
             --broker-token "$PACT_BROKER_TOKEN"
+
+
+
