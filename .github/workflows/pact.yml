@@ -53,8 +53,7 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v4
-        with:
-          node-version: 20
+        with: { node-version: 20 }
 
       - name: Install deps
         run: npm ci --no-audit --no-fund
@@ -66,26 +65,19 @@ jobs:
           node - <<'JS'
           import app, { resetData } from "./src/provider.js";
           import { Verifier } from "@pact-foundation/pact";
-
-          // Start the provider in THIS process so resetData() affects it
           const server = await new Promise((resolve) => {
             const s = app.listen(3000, () => resolve(s));
           });
-
           try {
-            const opts = {
+            await new Verifier({
               provider: "ItemsCrudAPI",
               providerBaseUrl: "http://localhost:3000",
               pactBrokerUrl: process.env.PACT_BROKER_BASE_URL,
               pactBrokerToken: process.env.PACT_BROKER_TOKEN,
-              consumerVersionSelectors: [
-                { branch: process.env.GITHUB_REF_NAME || "main", latest: true }
-              ],
+              consumerVersionSelectors: [{ branch: process.env.GITHUB_REF_NAME || "main", latest: true }],
               publishVerificationResult: true,
               providerVersion: process.env.GIT_SHA,
               providerBranch: process.env.GITHUB_REF_NAME || "main",
-
-              // Reset data for every provider state used in your pact
               stateHandlers: {
                 "items exist": async () => { resetData(); },
                 "the item for that id exists": async () => { resetData(); },
@@ -94,14 +86,20 @@ jobs:
                 "a name is provided for the item that needs to be added": async () => { resetData(); },
                 "no name is given when a new item is created": async () => { resetData(); },
               },
-            };
-
-            await new Verifier(opts).verifyProvider();
+            }).verifyProvider();
           } finally {
-            await new Promise((resolve) => server.close(resolve));
+            await new Promise((r) => server.close(r));
           }
           JS
 
+      - name: Record provider deployment to test
+        run: |
+          npx -y @pact-foundation/pact-cli pact-broker record-deployment \
+            --pacticipant ItemsCrudAPI \
+            --version ${{ github.sha }} \
+            --environment test \
+            --broker-base-url "$PACT_BROKER_BASE_URL" \
+            --broker-token "$PACT_BROKER_TOKEN"
 
   gate:
     needs: provider
@@ -110,24 +108,21 @@ jobs:
       PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
       PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Install deps (for pact-cli)
-        run: npm ci --no-audit --no-fund
-
       - name: can-i-deploy consumer to test
         run: |
-          npx pact-broker can-i-deploy \
+          npx -y @pact-foundation/pact-cli pact-broker can-i-deploy \
             --pacticipant ItemsConsumer \
             --version ${{ github.sha }} \
             --to-environment test \
             --broker-base-url "$PACT_BROKER_BASE_URL" \
             --broker-token "$PACT_BROKER_TOKEN"
 
-
+      - name: Record consumer deployment to test
+        if: success()
+        run: |
+          npx -y @pact-foundation/pact-cli pact-broker record-deployment \
+            --pacticipant ItemsConsumer \
+            --version ${{ github.sha }} \
+            --environment test \
+            --broker-base-url "$PACT_BROKER_BASE_URL" \
+            --broker-token "$PACT_BROKER_TOKEN"
