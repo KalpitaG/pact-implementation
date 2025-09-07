@@ -23,9 +23,22 @@ jobs:
       - name: Install deps
         run: npm ci --no-audit --no-fund
 
+      # Run ONLY the consumer pact tests, single process for ESM/Jest stability
       - name: Test (consumer)
-        run: node --experimental-vm-modules ./node_modules/jest/bin/jest.js tests/consumer.pact.test.js --runInBand
+        run: node --experimental-vm-modules ./node_modules/jest/bin/jest.js tests/consumer.pact.test.js --runInBand --verbose
 
+      # Show what pact files were produced (helps debug when tests pass but no pacts exist)
+      - name: List generated pacts
+        run: |
+          echo "Generated pact files:"
+          ls -lah ./pacts || true
+
+      # Hard guard: fail early if there are no pact files to publish
+      - name: Ensure pact files exist
+        run: |
+          test -d ./pacts && test "$(ls -1 ./pacts | wc -l)" -gt 0 || (echo "No pact files found in ./pacts" && exit 1)
+
+      # Use the official CLI via npx (no local install needed)
       - name: Publish pact to Broker
         run: |
           npx -y @pact-foundation/pact-cli pact-broker publish ./pacts \
@@ -33,6 +46,7 @@ jobs:
             --branch ${{ github.ref_name }} \
             --broker-base-url "$PACT_BROKER_BASE_URL" \
             --broker-token "$PACT_BROKER_TOKEN"
+
 
   provider:
     needs: consumer
