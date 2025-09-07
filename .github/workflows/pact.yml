@@ -102,6 +102,7 @@ jobs:
           }
           JS
 
+
   gate:
     needs: provider
     runs-on: ubuntu-latest
@@ -109,24 +110,24 @@ jobs:
       PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
       PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps (for pact-cli)
+        run: npm ci --no-audit --no-fund
+
       - name: can-i-deploy consumer to test
         run: |
-          npx -y @pact-foundation/pact-cli pact-broker can-i-deploy \
+          npx pact-broker can-i-deploy \
             --pacticipant ItemsConsumer \
             --version ${{ github.sha }} \
             --to-environment test \
             --broker-base-url "$PACT_BROKER_BASE_URL" \
             --broker-token "$PACT_BROKER_TOKEN"
-
-      - name: Record consumer deployment to test
-        if: success()
-        run: |
-          npx -y @pact-foundation/pact-cli pact-broker record-deployment \
-            --pacticipant ItemsConsumer \
-            --version ${{ github.sha }} \
-            --environment test \
-            --broker-base-url "$PACT_BROKER_BASE_URL" \
-            --broker-token "$PACT_BROKER_TOKEN"
-
 
 
