@@ -1,40 +1,70 @@
 name: pact-pipeline
-on: [push]
+on:
+  push:
+    branches: ["**"]  # run on any branch
 
 jobs:
   consumer:
     runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --experimental-vm-modules
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
-      - run: npm ci
-      - run: npm run test:consumer
-      - name: Publish pact
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Node info
+        run: |
+          node -v
+          npm -v
+
+      - name: Install deps
+        run: npm ci --no-audit --no-fund
+
+      # Run consumer pact tests explicitly (single process for stability)
+      - name: Test (consumer)
+        run: node --experimental-vm-modules ./node_modules/jest/bin/jest.js tests/consumer.pact.test.js --runInBand
+
+      - name: Publish pact to Broker
         env:
           PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
           PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
         run: |
           npx pact-broker publish ./pacts \
             --consumer-app-version ${{ github.sha }} \
-            --branch main \
+            --branch ${{ github.ref_name }} \
             --broker-base-url "$PACT_BROKER_BASE_URL" \
             --broker-token "$PACT_BROKER_TOKEN"
 
   provider:
     needs: consumer
     runs-on: ubuntu-latest
+    env:
+      NODE_OPTIONS: --experimental-vm-modules
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20 }
-      - run: npm ci
-      - name: Start provider
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci --no-audit --no-fund
+
+      - name: Start provider (background)
         run: node -e "import('./src/provider.js').then(m=>m.default.listen(3000))" &
+
       - name: Verify against PactFlow
         env:
           PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
           PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+          GIT_SHA: ${{ github.sha }}
         run: |
           node - <<'JS'
           import { Verifier } from "@pact-foundation/pact";
@@ -43,10 +73,18 @@ jobs:
             providerBaseUrl: "http://localhost:3000",
             pactBrokerUrl: process.env.PACT_BROKER_BASE_URL,
             pactBrokerToken: process.env.PACT_BROKER_TOKEN,
-            consumerVersionSelectors: [{ branch: "main", latest: true }],
+            consumerVersionSelectors: [{ branch: process.env.GITHUB_REF_NAME || "main", latest: true }],
             publishVerificationResult: true,
-            providerVersion: process.env.GITHUB_SHA,
-            providerBranch: "main",
+            providerVersion: process.env.GIT_SHA,
+            providerBranch: process.env.GITHUB_REF_NAME || "main",
+            stateHandlers: {
+              "items exist": async () => {},
+              "the item for that id exists": async () => {},
+              "an item with that id exists and can be replaced": async () => {},
+              "an item does not exist for the specified id": async () => {},
+              "a name is provided for the item that needs to be added": async () => {},
+              "no name is given when a new item is created": async () => {},
+            },
           };
           await new Verifier(opts).verifyProvider();
           JS
