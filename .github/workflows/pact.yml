@@ -126,3 +126,13 @@ jobs:
             --to-environment test \
             --broker-base-url "$PACT_BROKER_BASE_URL" \
             --broker-token "$PACT_BROKER_TOKEN"
+
+      - name: Record consumer deployment to test
+        if: success()
+        run: |
+          npx pact-broker record-deployment \
+            --pacticipant ItemsConsumer \
+            --version ${{ github.sha }} \
+            --environment test \
+            --broker-base-url "$PACT_BROKER_BASE_URL" \
+            --broker-token "$PACT_BROKER_TOKEN"
