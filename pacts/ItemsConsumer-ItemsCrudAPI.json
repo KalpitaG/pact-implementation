@@ -1,0 +1,283 @@
+{
+  "consumer": {
+    "name": "ItemsConsumer"
+  },
+  "interactions": [
+    {
+      "description": "a request add or create a new item without name",
+      "providerStates": [
+        {
+          "name": "no name is given when a new item is created"
+        }
+      ],
+      "request": {
+        "body": {
+          "price": 200
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/items"
+      },
+      "response": {
+        "body": {
+          "error": "name required"
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.error": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 400
+      }
+    },
+    {
+      "description": "a request to add a new item to the database",
+      "providerStates": [
+        {
+          "name": "a name is provided for the item that needs to be added"
+        }
+      ],
+      "request": {
+        "body": {
+          "name": "Laptop",
+          "price": 200
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/items"
+      },
+      "response": {
+        "body": {
+          "id": 3,
+          "name": "Laptop",
+          "price": 200
+        },
+        "headers": {
+          "Content-Type": "application/json",
+          "content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.price": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 201
+      }
+    },
+    {
+      "description": "a request to replace the parameters of the item",
+      "providerStates": [
+        {
+          "name": "an item with that id exists and can be replaced"
+        }
+      ],
+      "request": {
+        "body": {
+          "name": "Mobile",
+          "price": 100
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "PUT",
+        "path": "/items/1"
+      },
+      "response": {
+        "body": {
+          "id": 1,
+          "name": "Mobile",
+          "price": 100
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.price": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to return all items",
+      "providerStates": [
+        {
+          "name": "items exist"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/items"
+      },
+      "response": {
+        "body": [
+          {
+            "id": 1,
+            "name": "Alpha",
+            "price": 10
+          }
+        ],
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type",
+                  "min": 1
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to return an item of a specific id",
+      "providerStates": [
+        {
+          "name": "the item for that id exists"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/items/1"
+      },
+      "response": {
+        "body": {
+          "id": 1,
+          "name": "Alpha",
+          "price": 10
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to return an item with id 9",
+      "providerStates": [
+        {
+          "name": "an item does not exist for the specified id"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/items/9"
+      },
+      "response": {
+        "body": {
+          "error": "not found"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.error": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 404
+      }
+    }
+  ],
+  "metadata": {
+    "pact-js": {
+      "version": "15.0.1"
+    },
+    "pactRust": {
+      "ffi": "0.4.22",
+      "models": "1.2.3"
+    },
+    "pactSpecification": {
+      "version": "3.0.0"
+    }
+  },
+  "provider": {
+    "name": "ItemsCrudAPI"
+  }
+}

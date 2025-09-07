@@ -1,28 +1,82 @@
-// CommonJS to avoid ESM headaches in tests
-const express = require("express");
+// src/provider.js
+import express from "express";
+
 const app = express();
 app.use(express.json());
 
-// in-memory data
-let USERS = [{ id: 1, name: "Alice" }];
+// in-memory db
+let ITEMS = [
+    { id: 1, name: "Alpha", price: 10 },
+    { id: 2, name: "Bravo", price: 20 },
+];
 
-app.get("/users", (_req, res) => res.json(USERS));
+function nextId() {
+    return ITEMS.length ? Math.max(...ITEMS.map(i => i.id)) + 1 : 1;
+}
 
-app.post("/users", (req, res) => {
-  const { name } = req.body || {};
-  if (!name) return res.status(400).json({ error: "name is required" });
-  if (USERS.find(u => u.name === name)) return res.status(409).json({ error: "user exists" });
-  const id = Math.max(...USERS.map(u => u.id)) + 1;
-  const created = { id, name };
-  USERS.push(created);
-  res.status(201).json(created);
+// GET all
+app.get("/items", (_req, res) => {
+    res.json(ITEMS);
 });
 
-function resetData() { USERS = [{ id: 1, name: "Alice" }]; }
+// GET by id
+app.get("/items/:id", (req, res) => {
+    const item = ITEMS.find(i => i.id === Number(req.params.id));
+    if (!item) return res.status(404).json({ error: "not found" });
+    res.json(item);
+});
 
-module.exports = { default: app, resetData };
+// POST create
+app.post("/items", (req, res) => {
+    const { name, price } = req.body ?? {};
+    if (!name) return res.status(400).json({ error: "name required" });
+    const created = { id: nextId(), name, price: price ?? 0 };
+    ITEMS.push(created);
+    res.status(201).json(created);
+});
 
-// optional manual run: RUN_SERVER=1 node src/provider.js
+// PUT replace
+app.put("/items/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const { name, price } = req.body ?? {};
+    if (!name) return res.status(400).json({ error: "name required" });
+    const idx = ITEMS.findIndex(i => i.id === id);
+    if (idx === -1) return res.status(404).json({ error: "not found" });
+    ITEMS[idx] = { id, name, price: price ?? 0 };
+    res.json(ITEMS[idx]);
+});
+
+// PATCH partial update
+app.patch("/items/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const item = ITEMS.find(i => i.id === id);
+    if (!item) return res.status(404).json({ error: "not found" });
+    const { name, price } = req.body ?? {};
+    if (name != null) item.name = name;
+    if (price != null) item.price = price;
+    res.json(item);
+});
+
+// DELETE
+app.delete("/items/:id", (req, res) => {
+    const id = Number(req.params.id);
+    const exists = ITEMS.some(i => i.id === id);
+    if (!exists) return res.status(404).json({ error: "not found" });
+    ITEMS = ITEMS.filter(i => i.id !== id);
+    res.status(204).send();
+});
+
+// export for tests
+export function resetData() {
+    ITEMS = [
+        { id: 1, name: "Alpha", price: 10 },
+        { id: 2, name: "Bravo", price: 20 },
+    ];
+}
+
+export default app;
+
+// optional: run as server
 if (process.env.RUN_SERVER) {
-  app.listen(3000, () => console.log("Provider on http://localhost:3000"));
+    app.listen(3000, () => console.log("Provider on http://localhost:3000"));
 }
