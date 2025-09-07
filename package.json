@@ -1,0 +1,32 @@
+{
+  "name": "pact-implementation",
+  "version": "1.0.0",
+  "description": "Pact consumer-provider testing implementation",
+  "type": "module",
+  "scripts": {
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "test:consumer": "NODE_OPTIONS='--experimental-vm-modules' jest tests/consumer.pact.test.js",
+    "test:provider": "NODE_OPTIONS='--experimental-vm-modules' jest tests/provider.pact.test.js",
+    "test:provider-verify": "NODE_OPTIONS='--experimental-vm-modules' jest tests/provider.verify.test.js",
+    "start:provider": "cross-env PORT=3001 node provider/provider-service.js",
+    "test:web:consumer": "jest consumer-web/consumer-contract.spec.js",
+    "publish:pact": "pact-broker publish ./pacts --consumer-app-version=1.0.0 --tag=main --broker-base-url=$PACT_BROKER_BASE_URL --broker-token=$PACT_BROKER_TOKEN",
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "@jest/globals": "^30.1.2",
+    "@pact-foundation/pact": "^15.0.1",
+    "@pact-foundation/pact-cli": "^16.1.2",
+    "babel-jest": "^30.1.2",
+    "jest": "^30.1.3",
+    "jest-environment-node": "^30.1.2"
+  },
+  "dependencies": {
+    "axios": "^1.11.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.0"
+  }
+}
