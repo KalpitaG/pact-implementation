@@ -1,8 +1,7 @@
 name: pact-pipeline
-
 on:
   push:
-    branches: ["**"]  # run on any branch
+    branches: ["**"]
 
 jobs:
   consumer:
@@ -17,28 +16,28 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v4
-        with:
-          node-version: 20
+        with: { node-version: 20 }
 
       - name: Install deps
         run: npm ci --no-audit --no-fund
 
-      # Run ONLY the consumer pact tests, single process for ESM/Jest stability
+      # Run ONLY the consumer pact tests (ESM friendly)
       - name: Test (consumer)
         run: node --experimental-vm-modules ./node_modules/jest/bin/jest.js tests/consumer.pact.test.js --runInBand --verbose
 
-      # Show what pact files were produced (helps debug when tests pass but no pacts exist)
+      # Show pact files produced (debug)
       - name: List generated pacts
         run: |
-          echo "Generated pact files:"
+          echo "Generated pact files (./pacts):"
           ls -lah ./pacts || true
 
-      # Hard guard: fail early if there are no pact files to publish
+      # Hard fail if pacts folder is empty (means tests didn’t write any pact)
       - name: Ensure pact files exist
         run: |
-          test -d ./pacts && test "$(ls -1 ./pacts | wc -l)" -gt 0 || (echo "No pact files found in ./pacts" && exit 1)
+          test -d ./pacts && test "$(ls -1 ./pacts | wc -l)" -gt 0 \
+            || (echo "❌ No pact files found in ./pacts. Did tests fail or path change?" && exit 1)
 
-      # Use the official CLI via npx (no local install needed)
+      # Publish using official CLI (no local install needed)
       - name: Publish pact to Broker
         run: |
           npx -y @pact-foundation/pact-cli pact-broker publish ./pacts \
@@ -47,6 +46,13 @@ jobs:
             --broker-base-url "$PACT_BROKER_BASE_URL" \
             --broker-token "$PACT_BROKER_TOKEN"
 
+      # Keep artifacts so you can download pacts from a failing run
+      - name: Upload pacts (artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pacts
+          path: ./pacts
 
   provider:
     needs: consumer
@@ -61,13 +67,12 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v4
-        with:
-          node-version: 20
+        with: { node-version: 20 }
 
       - name: Install deps
         run: npm ci --no-audit --no-fund
 
-      # Start provider and verify in the SAME process so resetData() mutates the running app.
+      # Start provider and verify in the SAME process so resetData() actually resets the running app
       - name: Verify against PactFlow (with state resets)
         env:
           GIT_SHA: ${{ github.sha }}
@@ -76,9 +81,8 @@ jobs:
           import app, { resetData } from "./src/provider.js";
           import { Verifier } from "@pact-foundation/pact";
 
-          // Start provider here
-          const server = await new Promise((resolve) => {
-            const s = app.listen(3000, () => resolve(s));
+          const server = await new Promise((r) => {
+            const s = app.listen(3000, () => r(s));
           });
 
           try {
@@ -87,17 +91,13 @@ jobs:
               providerBaseUrl: "http://localhost:3000",
               pactBrokerUrl: process.env.PACT_BROKER_BASE_URL,
               pactBrokerToken: process.env.PACT_BROKER_TOKEN,
-
-              // Pull the latest pact for THIS branch
               consumerVersionSelectors: [
                 { branch: process.env.GITHUB_REF_NAME || "main", latest: true }
               ],
-
               publishVerificationResult: true,
               providerVersion: process.env.GIT_SHA,
               providerBranch: process.env.GITHUB_REF_NAME || "main",
-
-              // Reset data for each state used in your pact
+              logLevel: "debug",
               stateHandlers: {
                 "items exist": async () => { resetData(); },
                 "the item for that id exists": async () => { resetData(); },
@@ -108,11 +108,11 @@ jobs:
               },
             }).verifyProvider();
           } finally {
-            await new Promise((resolve) => server.close(resolve));
+            await new Promise((r) => server.close(r));
           }
           JS
 
-      # Mark this verified provider version as "deployed to test"
+      # Mark verified provider version as "deployed to test" so can-i-deploy compares against it
       - name: Record provider deployment to test
         run: |
           npx -y @pact-foundation/pact-cli pact-broker record-deployment \
@@ -138,7 +138,6 @@ jobs:
             --broker-base-url "$PACT_BROKER_BASE_URL" \
             --broker-token "$PACT_BROKER_TOKEN"
 
-      # If gate passes, mark the consumer as deployed to test too
       - name: Record consumer deployment to test
         if: success()
         run: |
