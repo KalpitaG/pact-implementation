@@ -104,3 +104,4 @@ jobs:
             --to-environment test \
             --broker-base-url "$PACT_BROKER_BASE_URL" \
             --broker-token "$PACT_BROKER_TOKEN"
+
