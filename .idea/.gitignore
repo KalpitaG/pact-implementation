@@ -1,5 +1,29 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-# Editor-based HTTP Client requests
-/httpRequests/
+.gitignore
+
+# macOS / editor
+.DS_Store
+.vscode/*
+!.vscode/settings.json
+
+# Node (root project)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# If you later move the app under ./frontend and install there too:
+frontend/node_modules/
+
+# Builds / coverage (optional)
+dist/
+build/
+coverage/
+
+# Python (if present)
+**/__pycache__/
+*.py[cod]
+Backend/.venv/
+
+# Go (optional)
+bin/
+*.out
+*.xml
