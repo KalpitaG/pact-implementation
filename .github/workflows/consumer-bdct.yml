@@ -1,0 +1,44 @@
+name: consumer-bdct
+on:
+  pull_request:
+    branches: [ main ]
+jobs:
+  bdct:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 18 }
+
+      - name: Install & run pact tests
+        run: |
+          npm ci
+          npm test -- --runInBand
+
+      - name: Publish pact
+        env:
+          PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
+          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+        run: |
+          CONSUMER_SHA=$(git rev-parse --short HEAD)
+          docker run --rm -v "$PWD:/w" -w /w \
+            docker.io/pactfoundation/pact-cli:latest \
+            pact-broker publish pacts \
+              --consumer-app-version "$CONSUMER_SHA" \
+              --branch main \
+              --broker-base-url "$PACT_BROKER_BASE_URL" \
+              --broker-token "$PACT_BROKER_TOKEN"
+
+      - name: can-i-deploy (consumer vs provider@main)
+        env:
+          PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
+          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+        run: |
+          CONSUMER_SHA=$(git rev-parse --short HEAD)
+          docker run --rm docker.io/pactfoundation/pact-cli:latest \
+            pact-broker can-i-deploy \
+              --pacticipant "ItemsConsumer" --version "$CONSUMER_SHA" \
+              --to-environment test \
+              --broker-base-url "$PACT_BROKER_BASE_URL" \
+              --broker-token "$PACT_BROKER_TOKEN" \
+              --retry-while-unknown=120 --retry-interval=5
