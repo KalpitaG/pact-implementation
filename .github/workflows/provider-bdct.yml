@@ -1,0 +1,49 @@
+name: provider-bdct
+on:
+  pull_request:
+    branches: [ main ]
+jobs:
+  bdct:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Newman smoke (optional)
+        run: |
+          npm ci
+          npx newman run postman/items.collection.json -r json --reporter-json-export newman/results.json
+
+      - name: Publish provider contract (OAS + results)
+        env:
+          PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
+          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+        run: |
+          PROVIDER_SHA=$(git rev-parse --short HEAD)
+          docker run --rm -v "$PWD:/w" -w /w \
+            docker.io/pactfoundation/pact-cli:latest \
+            pactflow publish-provider-contract oas/openapi.json \
+              --specification oas \
+              --provider "ItemsCrudAPI" \
+              --provider-app-version "$PROVIDER_SHA" \
+              --branch main \
+              --content-type application/json \
+              --verification-exit-code=0 \
+              --verification-results newman/results.json \
+              --verification-results-content-type application/json \
+              --verifier postman \
+              --broker-base-url "$PACT_BROKER_BASE_URL" \
+              --broker-token "$PACT_BROKER_TOKEN"
+
+      - name: can-i-deploy (provider vs consumer@main)
+        env:
+          PACT_BROKER_BASE_URL: ${{ secrets.PACT_BROKER_BASE_URL }}
+          PACT_BROKER_TOKEN: ${{ secrets.PACT_BROKER_TOKEN }}
+        run: |
+          PROVIDER_SHA=$(git rev-parse --short HEAD)
+          docker run --rm docker.io/pactfoundation/pact-cli:latest \
+            pact-broker can-i-deploy \
+              --pacticipant "ItemsCrudAPI" --version "$PROVIDER_SHA" \
+              --to-environment test \
+              --broker-base-url "$PACT_BROKER_BASE_URL" \
+              --broker-token "$PACT_BROKER_TOKEN" \
+              --retry-while-unknown=120 --retry-interval=5

@@ -12,7 +12,10 @@
     "test:web:consumer": "jest consumer-web/consumer-contract.spec.js",
     "publish:pact": "pact-broker publish ./pacts --consumer-app-version=1.0.0 --tag=main --broker-base-url=$PACT_BROKER_BASE_URL --broker-token=$PACT_BROKER_TOKEN",
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "bdct:newman": "mkdir -p newman && npx newman run postman/items.collection.json -r json --reporter-json-export newman/results.json",
+    "bdct:publish": "pactflow publish-provider-contract oas/openapi.yaml --provider ItemsCrudAPI --provider-app-version $GIT_SHA --branch main --content-type application/yaml --verification-exit-code=0 --verification-results newman/results.json --verification-results-content-type application/json --verifier postman",
+    "bdct:can-i-deploy:provider:test": "pact-broker can-i-deploy --pacticipant ItemsCrudAPI --version $GIT_SHA --to-environment test --broker-base-url $PACT_BROKER_BASE_URL --broker-token $PACT_BROKER_TOKEN"
   },
   "devDependencies": {
     "@babel/core": "^7.23.0",

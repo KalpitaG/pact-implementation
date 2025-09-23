@@ -1,0 +1,86 @@
+{
+  "info": {
+    "name": "ItemsCrudAPI - BDCT Smoke",
+    "_postman_id": "8f3e1c1a-0000-4c00-9000-000000000001",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [{ "key": "baseUrl", "value": "http://localhost:3000" }],
+  "item": [
+    {
+      "name": "List items",
+      "request": { "method": "GET", "url": "{{baseUrl}}/items" },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200', ()=> pm.response.code === 200);",
+          "pm.test('is array', ()=> Array.isArray(pm.response.json()));"
+        ]}
+      }]
+    },
+    {
+      "name": "Create item",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"name\":\"notebook\",\"price\":12.99}" },
+        "url": "{{baseUrl}}/items"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('201', ()=> pm.response.code === 201);",
+          "const b = pm.response.json();",
+          "pm.environment.set('itemId', b.id);",
+          "pm.test('has id/name', ()=> b.id && b.name);"
+        ]}
+      }]
+    },
+    {
+      "name": "Get item",
+      "request": { "method": "GET", "url": "{{baseUrl}}/items/{{itemId}}" },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200', ()=> pm.response.code === 200);",
+          "pm.test('id matches', ()=> pm.response.json().id === pm.environment.get('itemId'));"
+        ]}
+      }]
+    },
+    {
+      "name": "Update item",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\"name\":\"spiral notebook\"}" },
+        "url": "{{baseUrl}}/items/{{itemId}}"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('200', ()=> pm.response.code === 200);",
+          "pm.test('name updated', ()=> pm.response.json().name === 'spiral notebook');"
+        ]}
+      }]
+    },
+    {
+      "name": "Delete item",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/items/{{itemId}}" },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('204', ()=> pm.response.code === 204);"
+        ]}
+      }]
+    },
+    {
+      "name": "Get missing item",
+      "request": { "method": "GET", "url": "{{baseUrl}}/items/{{itemId}}" },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('404 after delete', ()=> pm.response.code === 404);"
+        ]}
+      }]
+    }
+  ]
+}
