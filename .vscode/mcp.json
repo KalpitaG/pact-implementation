@@ -1,0 +1,30 @@
+{
+  "servers": {
+    "smartbear": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@smartbear/mcp@latest"
+      ],
+      "env": {
+        "PACT_BROKER_BASE_URL": "${input:pact_broker_base_url}",
+        "PACT_BROKER_TOKEN": "${input:pact_broker_token}"
+      }
+    }
+  },
+  "inputs": [
+    {
+      "id": "pact_broker_base_url",
+      "type": "promptString",
+      "description": "Pact Broker Base URL (e.g. https://your-tenant.pactflow.io)",
+      "password": false
+    },
+    {
+      "id": "pact_broker_token",
+      "type": "promptString",
+      "description": "Pact Broker Token",
+      "password": true
+    }
+  ]
+}

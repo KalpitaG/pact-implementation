@@ -5,7 +5,7 @@
     },
     "item": [
       {
-        "id": "7fd71627-3cd6-4eb9-af6f-bf814a7e37dd",
+        "id": "31253f52-c800-4dd2-97c5-5b71d5f33a99",
         "name": "List items",
         "request": {
           "url": {
@@ -25,19 +25,19 @@
           {
             "listen": "test",
             "script": {
-              "id": "3d82b06e-a4ae-479e-a024-f772792c47e5",
+              "id": "a6fc5579-948d-4ac2-b2ea-e3b7a5e8efdb",
               "type": "text/javascript",
               "exec": [
                 "pm.test('200', ()=> pm.response.code === 200);",
                 "pm.test('is array', ()=> Array.isArray(pm.response.json()));"
               ],
-              "_lastExecutionId": "8a6b5196-34ab-49e0-aa39-5602cc1c746a"
+              "_lastExecutionId": "475120f7-9502-4215-a3b7-60fc489db751"
             }
           }
         ]
       },
       {
-        "id": "5d1a46f6-194d-42c8-bab8-c2011e41aebc",
+        "id": "45a8999a-be15-4c67-a9bd-02567456c30f",
         "name": "Create item",
         "request": {
           "url": {
@@ -67,7 +67,7 @@
           {
             "listen": "test",
             "script": {
-              "id": "ba32547a-1cf9-4030-99f5-2db34a3af3d3",
+              "id": "a9a92a35-1b22-4e01-81e9-f3069dec90ef",
               "type": "text/javascript",
               "exec": [
                 "pm.test('201', ()=> pm.response.code === 201);",
@@ -75,13 +75,13 @@
                 "pm.environment.set('itemId', b.id);",
                 "pm.test('has id/name', ()=> b.id && b.name);"
               ],
-              "_lastExecutionId": "ad9b95cf-2f41-44af-8ea5-6157b49dbc6a"
+              "_lastExecutionId": "c452a744-0c9c-4cb5-9416-d70ecf39d6ed"
             }
           }
         ]
       },
       {
-        "id": "0b6070b7-f1e7-4f78-bd0c-5bbf3ec3d97c",
+        "id": "e3b79e6a-afa1-48dd-a85b-4437ef40343d",
         "name": "Get item",
         "request": {
           "url": {
@@ -102,19 +102,19 @@
           {
             "listen": "test",
             "script": {
-              "id": "3739d6ff-9e74-4bd6-81d5-dd9e9335046a",
+              "id": "cd8d7255-08db-40fd-a184-bb4ec1a68b25",
               "type": "text/javascript",
               "exec": [
                 "pm.test('200', ()=> pm.response.code === 200);",
                 "pm.test('id matches', ()=> pm.response.json().id === pm.environment.get('itemId'));"
               ],
-              "_lastExecutionId": "8ab65c2d-8e7c-4446-b4de-c9c3999095f7"
+              "_lastExecutionId": "21a12664-8c9e-44cc-9e1d-b144e84594e8"
             }
           }
         ]
       },
       {
-        "id": "b604cc19-4533-4126-8a9d-c9f03446f78d",
+        "id": "bba3b3e7-799b-46de-a3e6-4a106fd5e0d3",
         "name": "Update item",
         "request": {
           "url": {
@@ -145,19 +145,19 @@
           {
             "listen": "test",
             "script": {
-              "id": "ffac5596-fb1a-4d3b-a3ae-628d545236c1",
+              "id": "6f9552a3-a640-4b68-82e5-37ccb3f8bd9b",
               "type": "text/javascript",
               "exec": [
                 "pm.test('200', ()=> pm.response.code === 200);",
                 "pm.test('name updated', ()=> pm.response.json().name === 'spiral notebook');"
               ],
-              "_lastExecutionId": "d934e55c-64b2-4cb7-9b97-5e5f77614f0a"
+              "_lastExecutionId": "5ee9c47b-012b-4b1d-8514-5a8811bf6f11"
             }
           }
         ]
       },
       {
-        "id": "7fc8d1f8-0e9a-457d-a9a8-5db902c75be8",
+        "id": "c7557946-0090-41d2-9a30-92f652c3ab5f",
         "name": "Delete item",
         "request": {
           "url": {
@@ -178,18 +178,18 @@
           {
             "listen": "test",
             "script": {
-              "id": "62a37cd8-c9d8-4b2a-bc0b-2728d4053d7d",
+              "id": "e51780a1-4ca4-4310-bdd6-099412f663fa",
               "type": "text/javascript",
               "exec": [
                 "pm.test('204', ()=> pm.response.code === 204);"
               ],
-              "_lastExecutionId": "c9bd303c-dda3-46f2-aeac-19a59d1cba92"
+              "_lastExecutionId": "191a41fd-45b8-468a-8c30-ddc83bad255d"
             }
           }
         ]
       },
       {
-        "id": "318a7dee-7e6d-4d2f-a2eb-58075d6fa427",
+        "id": "0198bb5b-0ebb-4874-ba66-474fd98301eb",
         "name": "Get missing item",
         "request": {
           "url": {
@@ -210,12 +210,12 @@
           {
             "listen": "test",
             "script": {
-              "id": "20515cc7-60c1-48d2-851d-50cb6fb7580e",
+              "id": "9eebf003-d6b6-4939-a8b1-6d490c81507f",
               "type": "text/javascript",
               "exec": [
                 "pm.test('404 after delete', ()=> pm.response.code === 404);"
               ],
-              "_lastExecutionId": "c4c04eb3-aca8-4ea1-826d-07b6ef18ac5c"
+              "_lastExecutionId": "0c4c1bc7-acab-427c-8d8f-d3241dee49ed"
             }
           }
         ]
@@ -236,11 +236,17 @@
     }
   },
   "environment": {
-    "id": "5d5bad21-6ebe-4a71-8100-5d95f900e41d",
-    "values": []
+    "id": "38b64a7f-b756-4474-b9b3-7401311f92de",
+    "values": [
+      {
+        "type": "any",
+        "value": 3,
+        "key": "itemId"
+      }
+    ]
   },
   "globals": {
-    "id": "50a93e0f-556c-4fc7-97f7-82cf9ed6cd77",
+    "id": "caa7861e-07f5-4a41-8773-79b2cbfcd93d",
     "values": []
   },
   "run": {
@@ -258,7 +264,7 @@
       "scripts": {
         "total": 6,
         "pending": 0,
-        "failed": 1
+        "failed": 0
       },
       "prerequests": {
         "total": 6,
@@ -268,7 +274,7 @@
       "requests": {
         "total": 6,
         "pending": 0,
-        "failed": 6
+        "failed": 0
       },
       "tests": {
         "total": 6,
@@ -276,14 +282,14 @@
         "failed": 0
       },
       "assertions": {
-        "total": 9,
+        "total": 10,
         "pending": 0,
-        "failed": 3
+        "failed": 0
       },
       "testScripts": {
         "total": 6,
         "pending": 0,
-        "failed": 1
+        "failed": 0
       },
       "prerequestScripts": {
         "total": 0,
@@ -292,10 +298,10 @@
       }
     },
     "timings": {
-      "responseAverage": 0,
-      "responseMin": 0,
-      "responseMax": 0,
-      "responseSd": 0,
+      "responseAverage": 5,
+      "responseMin": 1,
+      "responseMax": 18,
+      "responseSd": 6.0553007081949835,
       "dnsAverage": 0,
       "dnsMin": 0,
       "dnsMax": 0,
@@ -304,8 +310,8 @@
       "firstByteMin": 0,
       "firstByteMax": 0,
       "firstByteSd": 0,
-      "started": 1758612273950,
-      "completed": 1758612274036
+      "started": 1762726537801,
+      "completed": 1762726537901
     },
     "executions": [
       {
@@ -318,11 +324,11 @@
           "eof": false,
           "bof": true,
           "cr": false,
-          "ref": "7e2f13db-53c9-4ed0-af45-225c39a84527",
-          "httpRequestId": "9721243a-c490-4a84-ad41-f4c3c0b34db9"
+          "ref": "f5d4e400-ad4c-4b23-a984-a58a215497c0",
+          "httpRequestId": "55329e93-3653-486a-94aa-e22c7f7afbac"
         },
         "item": {
-          "id": "7fd71627-3cd6-4eb9-af6f-bf814a7e37dd",
+          "id": "31253f52-c800-4dd2-97c5-5b71d5f33a99",
           "name": "List items",
           "request": {
             "url": {
@@ -342,13 +348,13 @@
             {
               "listen": "test",
               "script": {
-                "id": "3d82b06e-a4ae-479e-a024-f772792c47e5",
+                "id": "a6fc5579-948d-4ac2-b2ea-e3b7a5e8efdb",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200', ()=> pm.response.code === 200);",
                   "pm.test('is array', ()=> Array.isArray(pm.response.json()));"
                 ],
-                "_lastExecutionId": "8a6b5196-34ab-49e0-aa39-5602cc1c746a"
+                "_lastExecutionId": "475120f7-9502-4215-a3b7-60fc489db751"
               }
             }
           ]
@@ -384,7 +390,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "b891e7e4-078a-46b3-bdd6-35205b2bf0e5",
+              "value": "79e12eb6-e6a6-4989-a86b-4cb92ace4ef6",
               "system": true
             },
             {
@@ -405,14 +411,121 @@
           ],
           "method": "GET"
         },
-        "id": "7fd71627-3cd6-4eb9-af6f-bf814a7e37dd",
-        "requestError": {
-          "errno": -61,
-          "code": "ECONNREFUSED",
-          "syscall": "connect",
-          "address": "127.0.0.1",
-          "port": 3000
+        "response": {
+          "id": "3484ebae-fbe7-4417-a16a-17651e4edd2a",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "71"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"47-/fGWXC+Ram2J0DtCqu9Lrq+Znaw\""
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 09 Nov 2025 22:15:37 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              91,
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              49,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              65,
+              108,
+              112,
+              104,
+              97,
+              34,
+              44,
+              34,
+              112,
+              114,
+              105,
+              99,
+              101,
+              34,
+              58,
+              49,
+              48,
+              125,
+              44,
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              50,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              66,
+              114,
+              97,
+              118,
+              111,
+              34,
+              44,
+              34,
+              112,
+              114,
+              105,
+              99,
+              101,
+              34,
+              58,
+              50,
+              48,
+              125,
+              93
+            ]
+          },
+          "cookie": [],
+          "responseTime": 18,
+          "responseSize": 71
         },
+        "id": "31253f52-c800-4dd2-97c5-5b71d5f33a99",
         "assertions": [
           {
             "assertion": "200",
@@ -420,28 +533,21 @@
           },
           {
             "assertion": "is array",
-            "skipped": false,
-            "error": {
-              "name": "JSONError",
-              "index": 1,
-              "test": "is array",
-              "message": "\"undefined\" is not valid JSON",
-              "stack": "JSONError: \"undefined\" is not valid JSON\n   at Object.eval sandbox-script.js:2:1)"
-            }
+            "skipped": false
           }
         ]
       },
       {
         "cursor": {
-          "ref": "c7296e36-2fc8-4477-ab69-3340dd26b646",
+          "ref": "2b5fc40a-6f26-482f-9c7b-655f887333a1",
           "length": 6,
           "cycles": 1,
           "position": 1,
           "iteration": 0,
-          "httpRequestId": "934a7aa7-9958-41e0-bdc5-f9645b233008"
+          "httpRequestId": "7770188b-d206-43ec-92ab-cced6ab47175"
         },
         "item": {
-          "id": "5d1a46f6-194d-42c8-bab8-c2011e41aebc",
+          "id": "45a8999a-be15-4c67-a9bd-02567456c30f",
           "name": "Create item",
           "request": {
             "url": {
@@ -471,7 +577,7 @@
             {
               "listen": "test",
               "script": {
-                "id": "ba32547a-1cf9-4030-99f5-2db34a3af3d3",
+                "id": "a9a92a35-1b22-4e01-81e9-f3069dec90ef",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('201', ()=> pm.response.code === 201);",
@@ -479,7 +585,7 @@
                   "pm.environment.set('itemId', b.id);",
                   "pm.test('has id/name', ()=> b.id && b.name);"
                 ],
-                "_lastExecutionId": "ad9b95cf-2f41-44af-8ea5-6157b49dbc6a"
+                "_lastExecutionId": "c452a744-0c9c-4cb5-9416-d70ecf39d6ed"
               }
             }
           ]
@@ -519,7 +625,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "71923518-91e5-4520-a6cf-df99340950fb",
+              "value": "158c8f83-990b-4b54-aa44-10a4d63c8026",
               "system": true
             },
             {
@@ -536,6 +642,11 @@
               "key": "Connection",
               "value": "keep-alive",
               "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": "33",
+              "system": true
             }
           ],
           "method": "POST",
@@ -544,45 +655,112 @@
             "raw": "{\"name\":\"notebook\",\"price\":12.99}"
           }
         },
-        "id": "5d1a46f6-194d-42c8-bab8-c2011e41aebc",
-        "requestError": {
-          "errno": -61,
-          "code": "ECONNREFUSED",
-          "syscall": "connect",
-          "address": "127.0.0.1",
-          "port": 3000
+        "response": {
+          "id": "c9214f64-6b10-450a-a753-22ab2a0f1d61",
+          "status": "Created",
+          "code": 201,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "40"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"28-0jNr15g435MNYN0tC4l+ggQNWO4\""
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 09 Nov 2025 22:15:37 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              51,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              110,
+              111,
+              116,
+              101,
+              98,
+              111,
+              111,
+              107,
+              34,
+              44,
+              34,
+              112,
+              114,
+              105,
+              99,
+              101,
+              34,
+              58,
+              49,
+              50,
+              46,
+              57,
+              57,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 6,
+          "responseSize": 40
         },
+        "id": "45a8999a-be15-4c67-a9bd-02567456c30f",
         "assertions": [
           {
             "assertion": "201",
             "skipped": false
-          }
-        ],
-        "testScript": [
+          },
           {
-            "error": {
-              "type": "Error",
-              "name": "JSONError",
-              "message": "\"undefined\" is not valid JSON",
-              "checksum": "4db15f4d7d3ae61b799898db95379b99",
-              "id": "262545d5-486a-46a7-bf4f-641a15d0215d",
-              "timestamp": 1758612273991,
-              "stacktrace": []
-            }
+            "assertion": "has id/name",
+            "skipped": false
           }
         ]
       },
       {
         "cursor": {
-          "ref": "6f295e23-657b-4073-b40a-047fc07bd350",
+          "ref": "e63d25b3-6594-43f1-96ee-5db7a3b987b4",
           "length": 6,
           "cycles": 1,
           "position": 2,
           "iteration": 0,
-          "httpRequestId": "96d9b556-4c29-48f2-8573-3705e547350e"
+          "httpRequestId": "6ad712a7-4765-4e10-a321-4d3918c054c8"
         },
         "item": {
-          "id": "0b6070b7-f1e7-4f78-bd0c-5bbf3ec3d97c",
+          "id": "e3b79e6a-afa1-48dd-a85b-4437ef40343d",
           "name": "Get item",
           "request": {
             "url": {
@@ -603,13 +781,13 @@
             {
               "listen": "test",
               "script": {
-                "id": "3739d6ff-9e74-4bd6-81d5-dd9e9335046a",
+                "id": "cd8d7255-08db-40fd-a184-bb4ec1a68b25",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200', ()=> pm.response.code === 200);",
                   "pm.test('id matches', ()=> pm.response.json().id === pm.environment.get('itemId'));"
                 ],
-                "_lastExecutionId": "8ab65c2d-8e7c-4446-b4de-c9c3999095f7"
+                "_lastExecutionId": "21a12664-8c9e-44cc-9e1d-b144e84594e8"
               }
             }
           ]
@@ -620,7 +798,7 @@
             "port": "3000",
             "path": [
               "items",
-              "%7B%7BitemId%7D%7D"
+              "3"
             ],
             "host": [
               "localhost"
@@ -646,7 +824,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "ee2d1f97-e021-4626-88e4-c2c3d303a54d",
+              "value": "91de17da-fef2-4f32-9ec6-6e4f8588fdc5",
               "system": true
             },
             {
@@ -667,14 +845,90 @@
           ],
           "method": "GET"
         },
-        "id": "0b6070b7-f1e7-4f78-bd0c-5bbf3ec3d97c",
-        "requestError": {
-          "errno": -61,
-          "code": "ECONNREFUSED",
-          "syscall": "connect",
-          "address": "127.0.0.1",
-          "port": 3000
+        "response": {
+          "id": "57e26f62-a04f-4246-a063-5b2e089499b9",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "40"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"28-0jNr15g435MNYN0tC4l+ggQNWO4\""
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 09 Nov 2025 22:15:37 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              51,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              110,
+              111,
+              116,
+              101,
+              98,
+              111,
+              111,
+              107,
+              34,
+              44,
+              34,
+              112,
+              114,
+              105,
+              99,
+              101,
+              34,
+              58,
+              49,
+              50,
+              46,
+              57,
+              57,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 1,
+          "responseSize": 40
         },
+        "id": "e3b79e6a-afa1-48dd-a85b-4437ef40343d",
         "assertions": [
           {
             "assertion": "200",
@@ -682,28 +936,21 @@
           },
           {
             "assertion": "id matches",
-            "skipped": false,
-            "error": {
-              "name": "JSONError",
-              "index": 1,
-              "test": "id matches",
-              "message": "\"undefined\" is not valid JSON",
-              "stack": "JSONError: \"undefined\" is not valid JSON\n   at Object.eval sandbox-script.js:2:3)"
-            }
+            "skipped": false
           }
         ]
       },
       {
         "cursor": {
-          "ref": "f18245c3-562c-49d8-8f3f-80d3a8b059bb",
+          "ref": "b46368d6-abd8-4976-8fd8-a4add8bd1017",
           "length": 6,
           "cycles": 1,
           "position": 3,
           "iteration": 0,
-          "httpRequestId": "4f772490-b403-468b-87a0-8fba6d8566fd"
+          "httpRequestId": "d7138ff9-21e1-4c33-a8c7-69225ece57c1"
         },
         "item": {
-          "id": "b604cc19-4533-4126-8a9d-c9f03446f78d",
+          "id": "bba3b3e7-799b-46de-a3e6-4a106fd5e0d3",
           "name": "Update item",
           "request": {
             "url": {
@@ -734,13 +981,13 @@
             {
               "listen": "test",
               "script": {
-                "id": "ffac5596-fb1a-4d3b-a3ae-628d545236c1",
+                "id": "6f9552a3-a640-4b68-82e5-37ccb3f8bd9b",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('200', ()=> pm.response.code === 200);",
                   "pm.test('name updated', ()=> pm.response.json().name === 'spiral notebook');"
                 ],
-                "_lastExecutionId": "d934e55c-64b2-4cb7-9b97-5e5f77614f0a"
+                "_lastExecutionId": "5ee9c47b-012b-4b1d-8514-5a8811bf6f11"
               }
             }
           ]
@@ -751,7 +998,7 @@
             "port": "3000",
             "path": [
               "items",
-              "%7B%7BitemId%7D%7D"
+              "3"
             ],
             "host": [
               "localhost"
@@ -781,7 +1028,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "ff29d7e5-81c6-47b8-8d75-b084ecb6a95c",
+              "value": "d57a544b-4dc7-4914-b6c3-29d0e74c1387",
               "system": true
             },
             {
@@ -798,6 +1045,11 @@
               "key": "Connection",
               "value": "keep-alive",
               "system": true
+            },
+            {
+              "key": "Content-Length",
+              "value": "26",
+              "system": true
             }
           ],
           "method": "PUT",
@@ -806,14 +1058,93 @@
             "raw": "{\"name\":\"spiral notebook\"}"
           }
         },
-        "id": "b604cc19-4533-4126-8a9d-c9f03446f78d",
-        "requestError": {
-          "errno": -61,
-          "code": "ECONNREFUSED",
-          "syscall": "connect",
-          "address": "127.0.0.1",
-          "port": 3000
+        "response": {
+          "id": "b63a0722-f288-4de2-b98d-56c4072b6a3b",
+          "status": "OK",
+          "code": 200,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "43"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"2b-8dsw0V82LiXyMvu0kRelA2zNdX8\""
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 09 Nov 2025 22:15:37 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              105,
+              100,
+              34,
+              58,
+              51,
+              44,
+              34,
+              110,
+              97,
+              109,
+              101,
+              34,
+              58,
+              34,
+              115,
+              112,
+              105,
+              114,
+              97,
+              108,
+              32,
+              110,
+              111,
+              116,
+              101,
+              98,
+              111,
+              111,
+              107,
+              34,
+              44,
+              34,
+              112,
+              114,
+              105,
+              99,
+              101,
+              34,
+              58,
+              48,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 2,
+          "responseSize": 43
         },
+        "id": "bba3b3e7-799b-46de-a3e6-4a106fd5e0d3",
         "assertions": [
           {
             "assertion": "200",
@@ -821,28 +1152,21 @@
           },
           {
             "assertion": "name updated",
-            "skipped": false,
-            "error": {
-              "name": "JSONError",
-              "index": 1,
-              "test": "name updated",
-              "message": "\"undefined\" is not valid JSON",
-              "stack": "JSONError: \"undefined\" is not valid JSON\n   at Object.eval sandbox-script.js:2:4)"
-            }
+            "skipped": false
           }
         ]
       },
       {
         "cursor": {
-          "ref": "a7459a9d-6f3f-4ae5-bbe0-b812a72ecdd9",
+          "ref": "89301c33-2b34-4300-9e3b-3b9e7a0f34ef",
           "length": 6,
           "cycles": 1,
           "position": 4,
           "iteration": 0,
-          "httpRequestId": "397748ca-aa8e-41e6-8cf1-56a339318b98"
+          "httpRequestId": "1a1d4f3c-ee12-494b-99f3-93d164f61f96"
         },
         "item": {
-          "id": "7fc8d1f8-0e9a-457d-a9a8-5db902c75be8",
+          "id": "c7557946-0090-41d2-9a30-92f652c3ab5f",
           "name": "Delete item",
           "request": {
             "url": {
@@ -863,12 +1187,12 @@
             {
               "listen": "test",
               "script": {
-                "id": "62a37cd8-c9d8-4b2a-bc0b-2728d4053d7d",
+                "id": "e51780a1-4ca4-4310-bdd6-099412f663fa",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('204', ()=> pm.response.code === 204);"
                 ],
-                "_lastExecutionId": "c9bd303c-dda3-46f2-aeac-19a59d1cba92"
+                "_lastExecutionId": "191a41fd-45b8-468a-8c30-ddc83bad255d"
               }
             }
           ]
@@ -879,7 +1203,7 @@
             "port": "3000",
             "path": [
               "items",
-              "%7B%7BitemId%7D%7D"
+              "3"
             ],
             "host": [
               "localhost"
@@ -905,7 +1229,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "3fcc5250-721e-4713-b959-4346e676bf6b",
+              "value": "72270010-cfb7-4ece-82f8-a8c1ec0d2bea",
               "system": true
             },
             {
@@ -926,14 +1250,37 @@
           ],
           "method": "DELETE"
         },
-        "id": "7fc8d1f8-0e9a-457d-a9a8-5db902c75be8",
-        "requestError": {
-          "errno": -61,
-          "code": "ECONNREFUSED",
-          "syscall": "connect",
-          "address": "127.0.0.1",
-          "port": 3000
+        "response": {
+          "id": "d666499a-cb75-4f46-8316-6e1e1e2199ee",
+          "status": "No Content",
+          "code": 204,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 09 Nov 2025 22:15:37 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": []
+          },
+          "cookie": [],
+          "responseTime": 2,
+          "responseSize": 0
         },
+        "id": "c7557946-0090-41d2-9a30-92f652c3ab5f",
         "assertions": [
           {
             "assertion": "204",
@@ -943,15 +1290,15 @@
       },
       {
         "cursor": {
-          "ref": "4a68b49d-f023-4f23-a1c7-bc7701bc8558",
+          "ref": "df58d7fe-4df9-40d6-b23b-7b4f6444879c",
           "length": 6,
           "cycles": 1,
           "position": 5,
           "iteration": 0,
-          "httpRequestId": "2c59f818-2e56-413f-9d2e-76ec968ff595"
+          "httpRequestId": "ee1bb56d-33c4-49c8-afc3-e064d32f1e4c"
         },
         "item": {
-          "id": "318a7dee-7e6d-4d2f-a2eb-58075d6fa427",
+          "id": "0198bb5b-0ebb-4874-ba66-474fd98301eb",
           "name": "Get missing item",
           "request": {
             "url": {
@@ -972,12 +1319,12 @@
             {
               "listen": "test",
               "script": {
-                "id": "20515cc7-60c1-48d2-851d-50cb6fb7580e",
+                "id": "9eebf003-d6b6-4939-a8b1-6d490c81507f",
                 "type": "text/javascript",
                 "exec": [
                   "pm.test('404 after delete', ()=> pm.response.code === 404);"
                 ],
-                "_lastExecutionId": "c4c04eb3-aca8-4ea1-826d-07b6ef18ac5c"
+                "_lastExecutionId": "0c4c1bc7-acab-427c-8d8f-d3241dee49ed"
               }
             }
           ]
@@ -988,7 +1335,7 @@
             "port": "3000",
             "path": [
               "items",
-              "%7B%7BitemId%7D%7D"
+              "3"
             ],
             "host": [
               "localhost"
@@ -1014,7 +1361,7 @@
             },
             {
               "key": "Postman-Token",
-              "value": "9d63945c-f3e0-4406-838e-71f13452371c",
+              "value": "57b5df7e-8efd-483f-996a-89d2de04e176",
               "system": true
             },
             {
@@ -1035,14 +1382,71 @@
           ],
           "method": "GET"
         },
-        "id": "318a7dee-7e6d-4d2f-a2eb-58075d6fa427",
-        "requestError": {
-          "errno": -61,
-          "code": "ECONNREFUSED",
-          "syscall": "connect",
-          "address": "127.0.0.1",
-          "port": 3000
+        "response": {
+          "id": "f195a095-bc26-4bf8-9a72-b4158516f813",
+          "status": "Not Found",
+          "code": 404,
+          "header": [
+            {
+              "key": "X-Powered-By",
+              "value": "Express"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json; charset=utf-8"
+            },
+            {
+              "key": "Content-Length",
+              "value": "21"
+            },
+            {
+              "key": "ETag",
+              "value": "W/\"15-3jlv4LtvSUoQruAmr3ef7Px06u0\""
+            },
+            {
+              "key": "Date",
+              "value": "Sun, 09 Nov 2025 22:15:37 GMT"
+            },
+            {
+              "key": "Connection",
+              "value": "keep-alive"
+            },
+            {
+              "key": "Keep-Alive",
+              "value": "timeout=5"
+            }
+          ],
+          "stream": {
+            "type": "Buffer",
+            "data": [
+              123,
+              34,
+              101,
+              114,
+              114,
+              111,
+              114,
+              34,
+              58,
+              34,
+              110,
+              111,
+              116,
+              32,
+              102,
+              111,
+              117,
+              110,
+              100,
+              34,
+              125
+            ]
+          },
+          "cookie": [],
+          "responseTime": 1,
+          "responseSize": 21
         },
+        "id": "0198bb5b-0ebb-4874-ba66-474fd98301eb",
         "assertions": [
           {
             "assertion": "404 after delete",
@@ -1052,1887 +1456,9 @@
       }
     ],
     "transfers": {
-      "responseTotal": 0
+      "responseTotal": 215
     },
-    "failures": [
-      {
-        "error": {
-          "errno": -61,
-          "code": "ECONNREFUSED",
-          "syscall": "connect",
-          "address": "127.0.0.1",
-          "port": 3000,
-          "name": "Error",
-          "message": "connect ECONNREFUSED 127.0.0.1:3000",
-          "stack": "Error: connect ECONNREFUSED 127.0.0.1:3000\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1636:16)",
-          "checksum": "f2ae8a8f01bd525ef4ee158deaede7b9",
-          "id": "f5bec20b-e1d0-4893-b492-e38745434b0d",
-          "timestamp": 1758612273967,
-          "stacktrace": [
-            {
-              "fileName": "node:net",
-              "lineNumber": 1636,
-              "functionName": "TCPConnectWrap.afterConnect [as oncomplete]",
-              "typeName": "TCPConnectWrap",
-              "methodName": "afterConnect [as oncomplete]",
-              "columnNumber": 16,
-              "native": false
-            }
-          ]
-        },
-        "at": "request",
-        "source": {
-          "id": "7fd71627-3cd6-4eb9-af6f-bf814a7e37dd",
-          "name": "List items",
-          "request": {
-            "url": {
-              "protocol": "http",
-              "port": "3000",
-              "path": [
-                "items"
-              ],
-              "host": [
-                "localhost"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "header": [
-              {
-                "key": "User-Agent",
-                "value": "PostmanRuntime/7.39.1",
-                "system": true
-              },
-              {
-                "key": "Accept",
-                "value": "*/*",
-                "system": true
-              },
-              {
-                "key": "Cache-Control",
-                "value": "no-cache",
-                "system": true
-              },
-              {
-                "key": "Postman-Token",
-                "value": "b891e7e4-078a-46b3-bdd6-35205b2bf0e5",
-                "system": true
-              },
-              {
-                "key": "Host",
-                "value": "localhost:3000",
-                "system": true
-              },
-              {
-                "key": "Accept-Encoding",
-                "value": "gzip, deflate, br",
-                "system": true
-              },
-              {
-                "key": "Connection",
-                "value": "keep-alive",
-                "system": true
-              }
-            ],
-            "method": "GET"
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "3d82b06e-a4ae-479e-a024-f772792c47e5",
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('200', ()=> pm.response.code === 200);",
-                  "pm.test('is array', ()=> Array.isArray(pm.response.json()));"
-                ]
-              }
-            }
-          ]
-        },
-        "cursor": {
-          "position": 0,
-          "iteration": 0,
-          "length": 6,
-          "cycles": 1,
-          "empty": false,
-          "eof": false,
-          "bof": true,
-          "cr": false,
-          "ref": "7e2f13db-53c9-4ed0-af45-225c39a84527",
-          "httpRequestId": "9721243a-c490-4a84-ad41-f4c3c0b34db9"
-        }
-      },
-      {
-        "error": {
-          "name": "JSONError",
-          "index": 1,
-          "test": "is array",
-          "message": "\"undefined\" is not valid JSON",
-          "stack": "JSONError: \"undefined\" is not valid JSON\n   at Object.eval sandbox-script.js:2:1)",
-          "checksum": "edeb2687f26a9428ea85c3b13ad04286",
-          "id": "b1be03b0-f524-4f39-bee3-7035b73d057c",
-          "timestamp": 1758612273974,
-          "stacktrace": [
-            {
-              "fileName": "sandbox-script.js",
-              "lineNumber": 2,
-              "functionName": "Object.eval",
-              "typeName": "Object",
-              "methodName": "eval",
-              "columnNumber": 1,
-              "native": false
-            }
-          ]
-        },
-        "at": "assertion:1 in test-script",
-        "source": {
-          "id": "7fd71627-3cd6-4eb9-af6f-bf814a7e37dd",
-          "name": "List items",
-          "request": {
-            "url": {
-              "path": [
-                "items"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "method": "GET"
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "3d82b06e-a4ae-479e-a024-f772792c47e5",
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('200', ()=> pm.response.code === 200);",
-                  "pm.test('is array', ()=> Array.isArray(pm.response.json()));"
-                ],
-                "_lastExecutionId": "8a6b5196-34ab-49e0-aa39-5602cc1c746a"
-              }
-            }
-          ]
-        },
-        "parent": {
-          "_": {
-            "postman_id": "8f3e1c1a-0000-4c00-9000-000000000001"
-          },
-          "item": [
-            {
-              "id": "7fd71627-3cd6-4eb9-af6f-bf814a7e37dd",
-              "name": "List items",
-              "request": {
-                "url": {
-                  "path": [
-                    "items"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "GET"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "3d82b06e-a4ae-479e-a024-f772792c47e5",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('200', ()=> pm.response.code === 200);",
-                      "pm.test('is array', ()=> Array.isArray(pm.response.json()));"
-                    ],
-                    "_lastExecutionId": "8a6b5196-34ab-49e0-aa39-5602cc1c746a"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "5d1a46f6-194d-42c8-bab8-c2011e41aebc",
-              "name": "Create item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\"name\":\"notebook\",\"price\":12.99}"
-                }
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "ba32547a-1cf9-4030-99f5-2db34a3af3d3",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('201', ()=> pm.response.code === 201);",
-                      "const b = pm.response.json();",
-                      "pm.environment.set('itemId', b.id);",
-                      "pm.test('has id/name', ()=> b.id && b.name);"
-                    ],
-                    "_lastExecutionId": "ad9b95cf-2f41-44af-8ea5-6157b49dbc6a"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "0b6070b7-f1e7-4f78-bd0c-5bbf3ec3d97c",
-              "name": "Get item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "GET"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "3739d6ff-9e74-4bd6-81d5-dd9e9335046a",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('200', ()=> pm.response.code === 200);",
-                      "pm.test('id matches', ()=> pm.response.json().id === pm.environment.get('itemId'));"
-                    ],
-                    "_lastExecutionId": "8ab65c2d-8e7c-4446-b4de-c9c3999095f7"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "b604cc19-4533-4126-8a9d-c9f03446f78d",
-              "name": "Update item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PUT",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\"name\":\"spiral notebook\"}"
-                }
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "ffac5596-fb1a-4d3b-a3ae-628d545236c1",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('200', ()=> pm.response.code === 200);",
-                      "pm.test('name updated', ()=> pm.response.json().name === 'spiral notebook');"
-                    ],
-                    "_lastExecutionId": "d934e55c-64b2-4cb7-9b97-5e5f77614f0a"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "7fc8d1f8-0e9a-457d-a9a8-5db902c75be8",
-              "name": "Delete item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "DELETE"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "62a37cd8-c9d8-4b2a-bc0b-2728d4053d7d",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('204', ()=> pm.response.code === 204);"
-                    ],
-                    "_lastExecutionId": "c9bd303c-dda3-46f2-aeac-19a59d1cba92"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "318a7dee-7e6d-4d2f-a2eb-58075d6fa427",
-              "name": "Get missing item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "GET"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "20515cc7-60c1-48d2-851d-50cb6fb7580e",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('404 after delete', ()=> pm.response.code === 404);"
-                    ],
-                    "_lastExecutionId": "c4c04eb3-aca8-4ea1-826d-07b6ef18ac5c"
-                  }
-                }
-              ]
-            }
-          ],
-          "event": [],
-          "variable": [
-            {
-              "type": "any",
-              "value": "http://localhost:3000",
-              "key": "baseUrl"
-            }
-          ],
-          "info": {
-            "_postman_id": "8f3e1c1a-0000-4c00-9000-000000000001",
-            "name": "ItemsCrudAPI - BDCT Smoke",
-            "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-          }
-        },
-        "cursor": {
-          "position": 0,
-          "iteration": 0,
-          "length": 6,
-          "cycles": 1,
-          "empty": false,
-          "eof": false,
-          "bof": true,
-          "cr": false,
-          "ref": "7e2f13db-53c9-4ed0-af45-225c39a84527",
-          "httpRequestId": "9721243a-c490-4a84-ad41-f4c3c0b34db9",
-          "scriptId": "3d82b06e-a4ae-479e-a024-f772792c47e5",
-          "execution": "8a6b5196-34ab-49e0-aa39-5602cc1c746a"
-        }
-      },
-      {
-        "error": {
-          "errno": -61,
-          "code": "ECONNREFUSED",
-          "syscall": "connect",
-          "address": "127.0.0.1",
-          "port": 3000,
-          "name": "Error",
-          "message": "connect ECONNREFUSED 127.0.0.1:3000",
-          "stack": "Error: connect ECONNREFUSED 127.0.0.1:3000\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1636:16)",
-          "checksum": "f2ae8a8f01bd525ef4ee158deaede7b9",
-          "id": "c645b22a-d1ad-4639-8f4d-3dd310728cd5",
-          "timestamp": 1758612273987,
-          "stacktrace": [
-            {
-              "fileName": "node:net",
-              "lineNumber": 1636,
-              "functionName": "TCPConnectWrap.afterConnect [as oncomplete]",
-              "typeName": "TCPConnectWrap",
-              "methodName": "afterConnect [as oncomplete]",
-              "columnNumber": 16,
-              "native": false
-            }
-          ]
-        },
-        "at": "request",
-        "source": {
-          "id": "5d1a46f6-194d-42c8-bab8-c2011e41aebc",
-          "name": "Create item",
-          "request": {
-            "url": {
-              "protocol": "http",
-              "port": "3000",
-              "path": [
-                "items"
-              ],
-              "host": [
-                "localhost"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "User-Agent",
-                "value": "PostmanRuntime/7.39.1",
-                "system": true
-              },
-              {
-                "key": "Accept",
-                "value": "*/*",
-                "system": true
-              },
-              {
-                "key": "Cache-Control",
-                "value": "no-cache",
-                "system": true
-              },
-              {
-                "key": "Postman-Token",
-                "value": "71923518-91e5-4520-a6cf-df99340950fb",
-                "system": true
-              },
-              {
-                "key": "Host",
-                "value": "localhost:3000",
-                "system": true
-              },
-              {
-                "key": "Accept-Encoding",
-                "value": "gzip, deflate, br",
-                "system": true
-              },
-              {
-                "key": "Connection",
-                "value": "keep-alive",
-                "system": true
-              }
-            ],
-            "method": "POST",
-            "body": {
-              "mode": "raw",
-              "raw": "{\"name\":\"notebook\",\"price\":12.99}"
-            }
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ba32547a-1cf9-4030-99f5-2db34a3af3d3",
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('201', ()=> pm.response.code === 201);",
-                  "const b = pm.response.json();",
-                  "pm.environment.set('itemId', b.id);",
-                  "pm.test('has id/name', ()=> b.id && b.name);"
-                ]
-              }
-            }
-          ]
-        },
-        "cursor": {
-          "ref": "c7296e36-2fc8-4477-ab69-3340dd26b646",
-          "length": 6,
-          "cycles": 1,
-          "position": 1,
-          "iteration": 0,
-          "httpRequestId": "934a7aa7-9958-41e0-bdc5-f9645b233008"
-        }
-      },
-      {
-        "error": {
-          "type": "Error",
-          "name": "JSONError",
-          "message": "\"undefined\" is not valid JSON",
-          "checksum": "4db15f4d7d3ae61b799898db95379b99",
-          "id": "262545d5-486a-46a7-bf4f-641a15d0215d",
-          "timestamp": 1758612273991,
-          "stacktrace": []
-        },
-        "at": "test-script",
-        "source": {
-          "id": "5d1a46f6-194d-42c8-bab8-c2011e41aebc",
-          "name": "Create item",
-          "request": {
-            "url": {
-              "path": [
-                "items"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "method": "POST",
-            "body": {
-              "mode": "raw",
-              "raw": "{\"name\":\"notebook\",\"price\":12.99}"
-            }
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ba32547a-1cf9-4030-99f5-2db34a3af3d3",
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('201', ()=> pm.response.code === 201);",
-                  "const b = pm.response.json();",
-                  "pm.environment.set('itemId', b.id);",
-                  "pm.test('has id/name', ()=> b.id && b.name);"
-                ],
-                "_lastExecutionId": "ad9b95cf-2f41-44af-8ea5-6157b49dbc6a"
-              }
-            }
-          ]
-        },
-        "parent": {
-          "_": {
-            "postman_id": "8f3e1c1a-0000-4c00-9000-000000000001"
-          },
-          "item": [
-            {
-              "id": "7fd71627-3cd6-4eb9-af6f-bf814a7e37dd",
-              "name": "List items",
-              "request": {
-                "url": {
-                  "path": [
-                    "items"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "GET"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "3d82b06e-a4ae-479e-a024-f772792c47e5",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('200', ()=> pm.response.code === 200);",
-                      "pm.test('is array', ()=> Array.isArray(pm.response.json()));"
-                    ],
-                    "_lastExecutionId": "8a6b5196-34ab-49e0-aa39-5602cc1c746a"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "5d1a46f6-194d-42c8-bab8-c2011e41aebc",
-              "name": "Create item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\"name\":\"notebook\",\"price\":12.99}"
-                }
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "ba32547a-1cf9-4030-99f5-2db34a3af3d3",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('201', ()=> pm.response.code === 201);",
-                      "const b = pm.response.json();",
-                      "pm.environment.set('itemId', b.id);",
-                      "pm.test('has id/name', ()=> b.id && b.name);"
-                    ],
-                    "_lastExecutionId": "ad9b95cf-2f41-44af-8ea5-6157b49dbc6a"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "0b6070b7-f1e7-4f78-bd0c-5bbf3ec3d97c",
-              "name": "Get item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "GET"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "3739d6ff-9e74-4bd6-81d5-dd9e9335046a",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('200', ()=> pm.response.code === 200);",
-                      "pm.test('id matches', ()=> pm.response.json().id === pm.environment.get('itemId'));"
-                    ],
-                    "_lastExecutionId": "8ab65c2d-8e7c-4446-b4de-c9c3999095f7"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "b604cc19-4533-4126-8a9d-c9f03446f78d",
-              "name": "Update item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PUT",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\"name\":\"spiral notebook\"}"
-                }
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "ffac5596-fb1a-4d3b-a3ae-628d545236c1",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('200', ()=> pm.response.code === 200);",
-                      "pm.test('name updated', ()=> pm.response.json().name === 'spiral notebook');"
-                    ],
-                    "_lastExecutionId": "d934e55c-64b2-4cb7-9b97-5e5f77614f0a"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "7fc8d1f8-0e9a-457d-a9a8-5db902c75be8",
-              "name": "Delete item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "DELETE"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "62a37cd8-c9d8-4b2a-bc0b-2728d4053d7d",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('204', ()=> pm.response.code === 204);"
-                    ],
-                    "_lastExecutionId": "c9bd303c-dda3-46f2-aeac-19a59d1cba92"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "318a7dee-7e6d-4d2f-a2eb-58075d6fa427",
-              "name": "Get missing item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "GET"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "20515cc7-60c1-48d2-851d-50cb6fb7580e",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('404 after delete', ()=> pm.response.code === 404);"
-                    ],
-                    "_lastExecutionId": "c4c04eb3-aca8-4ea1-826d-07b6ef18ac5c"
-                  }
-                }
-              ]
-            }
-          ],
-          "event": [],
-          "variable": [
-            {
-              "type": "any",
-              "value": "http://localhost:3000",
-              "key": "baseUrl"
-            }
-          ],
-          "info": {
-            "_postman_id": "8f3e1c1a-0000-4c00-9000-000000000001",
-            "name": "ItemsCrudAPI - BDCT Smoke",
-            "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-          }
-        },
-        "cursor": {
-          "ref": "c7296e36-2fc8-4477-ab69-3340dd26b646",
-          "length": 6,
-          "cycles": 1,
-          "position": 1,
-          "iteration": 0,
-          "httpRequestId": "934a7aa7-9958-41e0-bdc5-f9645b233008",
-          "scriptId": "ba32547a-1cf9-4030-99f5-2db34a3af3d3"
-        }
-      },
-      {
-        "error": {
-          "errno": -61,
-          "code": "ECONNREFUSED",
-          "syscall": "connect",
-          "address": "127.0.0.1",
-          "port": 3000,
-          "name": "Error",
-          "message": "connect ECONNREFUSED 127.0.0.1:3000",
-          "stack": "Error: connect ECONNREFUSED 127.0.0.1:3000\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1636:16)",
-          "checksum": "f2ae8a8f01bd525ef4ee158deaede7b9",
-          "id": "43c7ff50-d512-47e0-8943-64bbd80b74da",
-          "timestamp": 1758612273998,
-          "stacktrace": [
-            {
-              "fileName": "node:net",
-              "lineNumber": 1636,
-              "functionName": "TCPConnectWrap.afterConnect [as oncomplete]",
-              "typeName": "TCPConnectWrap",
-              "methodName": "afterConnect [as oncomplete]",
-              "columnNumber": 16,
-              "native": false
-            }
-          ]
-        },
-        "at": "request",
-        "source": {
-          "id": "0b6070b7-f1e7-4f78-bd0c-5bbf3ec3d97c",
-          "name": "Get item",
-          "request": {
-            "url": {
-              "protocol": "http",
-              "port": "3000",
-              "path": [
-                "items",
-                "%7B%7BitemId%7D%7D"
-              ],
-              "host": [
-                "localhost"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "header": [
-              {
-                "key": "User-Agent",
-                "value": "PostmanRuntime/7.39.1",
-                "system": true
-              },
-              {
-                "key": "Accept",
-                "value": "*/*",
-                "system": true
-              },
-              {
-                "key": "Cache-Control",
-                "value": "no-cache",
-                "system": true
-              },
-              {
-                "key": "Postman-Token",
-                "value": "ee2d1f97-e021-4626-88e4-c2c3d303a54d",
-                "system": true
-              },
-              {
-                "key": "Host",
-                "value": "localhost:3000",
-                "system": true
-              },
-              {
-                "key": "Accept-Encoding",
-                "value": "gzip, deflate, br",
-                "system": true
-              },
-              {
-                "key": "Connection",
-                "value": "keep-alive",
-                "system": true
-              }
-            ],
-            "method": "GET"
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "3739d6ff-9e74-4bd6-81d5-dd9e9335046a",
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('200', ()=> pm.response.code === 200);",
-                  "pm.test('id matches', ()=> pm.response.json().id === pm.environment.get('itemId'));"
-                ]
-              }
-            }
-          ]
-        },
-        "cursor": {
-          "ref": "6f295e23-657b-4073-b40a-047fc07bd350",
-          "length": 6,
-          "cycles": 1,
-          "position": 2,
-          "iteration": 0,
-          "httpRequestId": "96d9b556-4c29-48f2-8573-3705e547350e"
-        }
-      },
-      {
-        "error": {
-          "name": "JSONError",
-          "index": 1,
-          "test": "id matches",
-          "message": "\"undefined\" is not valid JSON",
-          "stack": "JSONError: \"undefined\" is not valid JSON\n   at Object.eval sandbox-script.js:2:3)",
-          "checksum": "ce58572b33dccc2eb52c88ed52feb1db",
-          "id": "d6e577d5-0086-4c9b-b85c-26af4f3706af",
-          "timestamp": 1758612274001,
-          "stacktrace": [
-            {
-              "fileName": "sandbox-script.js",
-              "lineNumber": 2,
-              "functionName": "Object.eval",
-              "typeName": "Object",
-              "methodName": "eval",
-              "columnNumber": 3,
-              "native": false
-            }
-          ]
-        },
-        "at": "assertion:1 in test-script",
-        "source": {
-          "id": "0b6070b7-f1e7-4f78-bd0c-5bbf3ec3d97c",
-          "name": "Get item",
-          "request": {
-            "url": {
-              "path": [
-                "items",
-                "{{itemId}}"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "method": "GET"
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "3739d6ff-9e74-4bd6-81d5-dd9e9335046a",
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('200', ()=> pm.response.code === 200);",
-                  "pm.test('id matches', ()=> pm.response.json().id === pm.environment.get('itemId'));"
-                ],
-                "_lastExecutionId": "8ab65c2d-8e7c-4446-b4de-c9c3999095f7"
-              }
-            }
-          ]
-        },
-        "parent": {
-          "_": {
-            "postman_id": "8f3e1c1a-0000-4c00-9000-000000000001"
-          },
-          "item": [
-            {
-              "id": "7fd71627-3cd6-4eb9-af6f-bf814a7e37dd",
-              "name": "List items",
-              "request": {
-                "url": {
-                  "path": [
-                    "items"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "GET"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "3d82b06e-a4ae-479e-a024-f772792c47e5",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('200', ()=> pm.response.code === 200);",
-                      "pm.test('is array', ()=> Array.isArray(pm.response.json()));"
-                    ],
-                    "_lastExecutionId": "8a6b5196-34ab-49e0-aa39-5602cc1c746a"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "5d1a46f6-194d-42c8-bab8-c2011e41aebc",
-              "name": "Create item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\"name\":\"notebook\",\"price\":12.99}"
-                }
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "ba32547a-1cf9-4030-99f5-2db34a3af3d3",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('201', ()=> pm.response.code === 201);",
-                      "const b = pm.response.json();",
-                      "pm.environment.set('itemId', b.id);",
-                      "pm.test('has id/name', ()=> b.id && b.name);"
-                    ],
-                    "_lastExecutionId": "ad9b95cf-2f41-44af-8ea5-6157b49dbc6a"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "0b6070b7-f1e7-4f78-bd0c-5bbf3ec3d97c",
-              "name": "Get item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "GET"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "3739d6ff-9e74-4bd6-81d5-dd9e9335046a",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('200', ()=> pm.response.code === 200);",
-                      "pm.test('id matches', ()=> pm.response.json().id === pm.environment.get('itemId'));"
-                    ],
-                    "_lastExecutionId": "8ab65c2d-8e7c-4446-b4de-c9c3999095f7"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "b604cc19-4533-4126-8a9d-c9f03446f78d",
-              "name": "Update item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PUT",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\"name\":\"spiral notebook\"}"
-                }
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "ffac5596-fb1a-4d3b-a3ae-628d545236c1",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('200', ()=> pm.response.code === 200);",
-                      "pm.test('name updated', ()=> pm.response.json().name === 'spiral notebook');"
-                    ],
-                    "_lastExecutionId": "d934e55c-64b2-4cb7-9b97-5e5f77614f0a"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "7fc8d1f8-0e9a-457d-a9a8-5db902c75be8",
-              "name": "Delete item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "DELETE"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "62a37cd8-c9d8-4b2a-bc0b-2728d4053d7d",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('204', ()=> pm.response.code === 204);"
-                    ],
-                    "_lastExecutionId": "c9bd303c-dda3-46f2-aeac-19a59d1cba92"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "318a7dee-7e6d-4d2f-a2eb-58075d6fa427",
-              "name": "Get missing item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "GET"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "20515cc7-60c1-48d2-851d-50cb6fb7580e",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('404 after delete', ()=> pm.response.code === 404);"
-                    ],
-                    "_lastExecutionId": "c4c04eb3-aca8-4ea1-826d-07b6ef18ac5c"
-                  }
-                }
-              ]
-            }
-          ],
-          "event": [],
-          "variable": [
-            {
-              "type": "any",
-              "value": "http://localhost:3000",
-              "key": "baseUrl"
-            }
-          ],
-          "info": {
-            "_postman_id": "8f3e1c1a-0000-4c00-9000-000000000001",
-            "name": "ItemsCrudAPI - BDCT Smoke",
-            "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-          }
-        },
-        "cursor": {
-          "ref": "6f295e23-657b-4073-b40a-047fc07bd350",
-          "length": 6,
-          "cycles": 1,
-          "position": 2,
-          "iteration": 0,
-          "httpRequestId": "96d9b556-4c29-48f2-8573-3705e547350e",
-          "scriptId": "3739d6ff-9e74-4bd6-81d5-dd9e9335046a",
-          "execution": "8ab65c2d-8e7c-4446-b4de-c9c3999095f7"
-        }
-      },
-      {
-        "error": {
-          "errno": -61,
-          "code": "ECONNREFUSED",
-          "syscall": "connect",
-          "address": "127.0.0.1",
-          "port": 3000,
-          "name": "Error",
-          "message": "connect ECONNREFUSED 127.0.0.1:3000",
-          "stack": "Error: connect ECONNREFUSED 127.0.0.1:3000\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1636:16)",
-          "checksum": "f2ae8a8f01bd525ef4ee158deaede7b9",
-          "id": "18edcebe-8859-4aae-adc9-257cb739d1ef",
-          "timestamp": 1758612274010,
-          "stacktrace": [
-            {
-              "fileName": "node:net",
-              "lineNumber": 1636,
-              "functionName": "TCPConnectWrap.afterConnect [as oncomplete]",
-              "typeName": "TCPConnectWrap",
-              "methodName": "afterConnect [as oncomplete]",
-              "columnNumber": 16,
-              "native": false
-            }
-          ]
-        },
-        "at": "request",
-        "source": {
-          "id": "b604cc19-4533-4126-8a9d-c9f03446f78d",
-          "name": "Update item",
-          "request": {
-            "url": {
-              "protocol": "http",
-              "port": "3000",
-              "path": [
-                "items",
-                "%7B%7BitemId%7D%7D"
-              ],
-              "host": [
-                "localhost"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "User-Agent",
-                "value": "PostmanRuntime/7.39.1",
-                "system": true
-              },
-              {
-                "key": "Accept",
-                "value": "*/*",
-                "system": true
-              },
-              {
-                "key": "Cache-Control",
-                "value": "no-cache",
-                "system": true
-              },
-              {
-                "key": "Postman-Token",
-                "value": "ff29d7e5-81c6-47b8-8d75-b084ecb6a95c",
-                "system": true
-              },
-              {
-                "key": "Host",
-                "value": "localhost:3000",
-                "system": true
-              },
-              {
-                "key": "Accept-Encoding",
-                "value": "gzip, deflate, br",
-                "system": true
-              },
-              {
-                "key": "Connection",
-                "value": "keep-alive",
-                "system": true
-              }
-            ],
-            "method": "PUT",
-            "body": {
-              "mode": "raw",
-              "raw": "{\"name\":\"spiral notebook\"}"
-            }
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ffac5596-fb1a-4d3b-a3ae-628d545236c1",
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('200', ()=> pm.response.code === 200);",
-                  "pm.test('name updated', ()=> pm.response.json().name === 'spiral notebook');"
-                ]
-              }
-            }
-          ]
-        },
-        "cursor": {
-          "ref": "f18245c3-562c-49d8-8f3f-80d3a8b059bb",
-          "length": 6,
-          "cycles": 1,
-          "position": 3,
-          "iteration": 0,
-          "httpRequestId": "4f772490-b403-468b-87a0-8fba6d8566fd"
-        }
-      },
-      {
-        "error": {
-          "name": "JSONError",
-          "index": 1,
-          "test": "name updated",
-          "message": "\"undefined\" is not valid JSON",
-          "stack": "JSONError: \"undefined\" is not valid JSON\n   at Object.eval sandbox-script.js:2:4)",
-          "checksum": "7c262e7432c97b3db6013dceaa9a2f33",
-          "id": "9941dbcf-5da4-4863-a054-1943eb79888e",
-          "timestamp": 1758612274012,
-          "stacktrace": [
-            {
-              "fileName": "sandbox-script.js",
-              "lineNumber": 2,
-              "functionName": "Object.eval",
-              "typeName": "Object",
-              "methodName": "eval",
-              "columnNumber": 4,
-              "native": false
-            }
-          ]
-        },
-        "at": "assertion:1 in test-script",
-        "source": {
-          "id": "b604cc19-4533-4126-8a9d-c9f03446f78d",
-          "name": "Update item",
-          "request": {
-            "url": {
-              "path": [
-                "items",
-                "{{itemId}}"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              }
-            ],
-            "method": "PUT",
-            "body": {
-              "mode": "raw",
-              "raw": "{\"name\":\"spiral notebook\"}"
-            }
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "ffac5596-fb1a-4d3b-a3ae-628d545236c1",
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('200', ()=> pm.response.code === 200);",
-                  "pm.test('name updated', ()=> pm.response.json().name === 'spiral notebook');"
-                ],
-                "_lastExecutionId": "d934e55c-64b2-4cb7-9b97-5e5f77614f0a"
-              }
-            }
-          ]
-        },
-        "parent": {
-          "_": {
-            "postman_id": "8f3e1c1a-0000-4c00-9000-000000000001"
-          },
-          "item": [
-            {
-              "id": "7fd71627-3cd6-4eb9-af6f-bf814a7e37dd",
-              "name": "List items",
-              "request": {
-                "url": {
-                  "path": [
-                    "items"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "GET"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "3d82b06e-a4ae-479e-a024-f772792c47e5",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('200', ()=> pm.response.code === 200);",
-                      "pm.test('is array', ()=> Array.isArray(pm.response.json()));"
-                    ],
-                    "_lastExecutionId": "8a6b5196-34ab-49e0-aa39-5602cc1c746a"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "5d1a46f6-194d-42c8-bab8-c2011e41aebc",
-              "name": "Create item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\"name\":\"notebook\",\"price\":12.99}"
-                }
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "ba32547a-1cf9-4030-99f5-2db34a3af3d3",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('201', ()=> pm.response.code === 201);",
-                      "const b = pm.response.json();",
-                      "pm.environment.set('itemId', b.id);",
-                      "pm.test('has id/name', ()=> b.id && b.name);"
-                    ],
-                    "_lastExecutionId": "ad9b95cf-2f41-44af-8ea5-6157b49dbc6a"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "0b6070b7-f1e7-4f78-bd0c-5bbf3ec3d97c",
-              "name": "Get item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "GET"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "3739d6ff-9e74-4bd6-81d5-dd9e9335046a",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('200', ()=> pm.response.code === 200);",
-                      "pm.test('id matches', ()=> pm.response.json().id === pm.environment.get('itemId'));"
-                    ],
-                    "_lastExecutionId": "8ab65c2d-8e7c-4446-b4de-c9c3999095f7"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "b604cc19-4533-4126-8a9d-c9f03446f78d",
-              "name": "Update item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "key": "Content-Type",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PUT",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\"name\":\"spiral notebook\"}"
-                }
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "ffac5596-fb1a-4d3b-a3ae-628d545236c1",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('200', ()=> pm.response.code === 200);",
-                      "pm.test('name updated', ()=> pm.response.json().name === 'spiral notebook');"
-                    ],
-                    "_lastExecutionId": "d934e55c-64b2-4cb7-9b97-5e5f77614f0a"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "7fc8d1f8-0e9a-457d-a9a8-5db902c75be8",
-              "name": "Delete item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "DELETE"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "62a37cd8-c9d8-4b2a-bc0b-2728d4053d7d",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('204', ()=> pm.response.code === 204);"
-                    ],
-                    "_lastExecutionId": "c9bd303c-dda3-46f2-aeac-19a59d1cba92"
-                  }
-                }
-              ]
-            },
-            {
-              "id": "318a7dee-7e6d-4d2f-a2eb-58075d6fa427",
-              "name": "Get missing item",
-              "request": {
-                "url": {
-                  "path": [
-                    "items",
-                    "{{itemId}}"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "method": "GET"
-              },
-              "response": [],
-              "event": [
-                {
-                  "listen": "test",
-                  "script": {
-                    "id": "20515cc7-60c1-48d2-851d-50cb6fb7580e",
-                    "type": "text/javascript",
-                    "exec": [
-                      "pm.test('404 after delete', ()=> pm.response.code === 404);"
-                    ],
-                    "_lastExecutionId": "c4c04eb3-aca8-4ea1-826d-07b6ef18ac5c"
-                  }
-                }
-              ]
-            }
-          ],
-          "event": [],
-          "variable": [
-            {
-              "type": "any",
-              "value": "http://localhost:3000",
-              "key": "baseUrl"
-            }
-          ],
-          "info": {
-            "_postman_id": "8f3e1c1a-0000-4c00-9000-000000000001",
-            "name": "ItemsCrudAPI - BDCT Smoke",
-            "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-          }
-        },
-        "cursor": {
-          "ref": "f18245c3-562c-49d8-8f3f-80d3a8b059bb",
-          "length": 6,
-          "cycles": 1,
-          "position": 3,
-          "iteration": 0,
-          "httpRequestId": "4f772490-b403-468b-87a0-8fba6d8566fd",
-          "scriptId": "ffac5596-fb1a-4d3b-a3ae-628d545236c1",
-          "execution": "d934e55c-64b2-4cb7-9b97-5e5f77614f0a"
-        }
-      },
-      {
-        "error": {
-          "errno": -61,
-          "code": "ECONNREFUSED",
-          "syscall": "connect",
-          "address": "127.0.0.1",
-          "port": 3000,
-          "name": "Error",
-          "message": "connect ECONNREFUSED 127.0.0.1:3000",
-          "stack": "Error: connect ECONNREFUSED 127.0.0.1:3000\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1636:16)",
-          "checksum": "f2ae8a8f01bd525ef4ee158deaede7b9",
-          "id": "5e2082a5-8505-4e89-bcd4-950c1d5dcfd3",
-          "timestamp": 1758612274020,
-          "stacktrace": [
-            {
-              "fileName": "node:net",
-              "lineNumber": 1636,
-              "functionName": "TCPConnectWrap.afterConnect [as oncomplete]",
-              "typeName": "TCPConnectWrap",
-              "methodName": "afterConnect [as oncomplete]",
-              "columnNumber": 16,
-              "native": false
-            }
-          ]
-        },
-        "at": "request",
-        "source": {
-          "id": "7fc8d1f8-0e9a-457d-a9a8-5db902c75be8",
-          "name": "Delete item",
-          "request": {
-            "url": {
-              "protocol": "http",
-              "port": "3000",
-              "path": [
-                "items",
-                "%7B%7BitemId%7D%7D"
-              ],
-              "host": [
-                "localhost"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "header": [
-              {
-                "key": "User-Agent",
-                "value": "PostmanRuntime/7.39.1",
-                "system": true
-              },
-              {
-                "key": "Accept",
-                "value": "*/*",
-                "system": true
-              },
-              {
-                "key": "Cache-Control",
-                "value": "no-cache",
-                "system": true
-              },
-              {
-                "key": "Postman-Token",
-                "value": "3fcc5250-721e-4713-b959-4346e676bf6b",
-                "system": true
-              },
-              {
-                "key": "Host",
-                "value": "localhost:3000",
-                "system": true
-              },
-              {
-                "key": "Accept-Encoding",
-                "value": "gzip, deflate, br",
-                "system": true
-              },
-              {
-                "key": "Connection",
-                "value": "keep-alive",
-                "system": true
-              }
-            ],
-            "method": "DELETE"
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "62a37cd8-c9d8-4b2a-bc0b-2728d4053d7d",
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('204', ()=> pm.response.code === 204);"
-                ]
-              }
-            }
-          ]
-        },
-        "cursor": {
-          "ref": "a7459a9d-6f3f-4ae5-bbe0-b812a72ecdd9",
-          "length": 6,
-          "cycles": 1,
-          "position": 4,
-          "iteration": 0,
-          "httpRequestId": "397748ca-aa8e-41e6-8cf1-56a339318b98"
-        }
-      },
-      {
-        "error": {
-          "errno": -61,
-          "code": "ECONNREFUSED",
-          "syscall": "connect",
-          "address": "127.0.0.1",
-          "port": 3000,
-          "name": "Error",
-          "message": "connect ECONNREFUSED 127.0.0.1:3000",
-          "stack": "Error: connect ECONNREFUSED 127.0.0.1:3000\n    at TCPConnectWrap.afterConnect [as oncomplete] (node:net:1636:16)",
-          "checksum": "f2ae8a8f01bd525ef4ee158deaede7b9",
-          "id": "62fd24f4-6f2d-4ffa-ab95-69ef4f00bef7",
-          "timestamp": 1758612274030,
-          "stacktrace": [
-            {
-              "fileName": "node:net",
-              "lineNumber": 1636,
-              "functionName": "TCPConnectWrap.afterConnect [as oncomplete]",
-              "typeName": "TCPConnectWrap",
-              "methodName": "afterConnect [as oncomplete]",
-              "columnNumber": 16,
-              "native": false
-            }
-          ]
-        },
-        "at": "request",
-        "source": {
-          "id": "318a7dee-7e6d-4d2f-a2eb-58075d6fa427",
-          "name": "Get missing item",
-          "request": {
-            "url": {
-              "protocol": "http",
-              "port": "3000",
-              "path": [
-                "items",
-                "%7B%7BitemId%7D%7D"
-              ],
-              "host": [
-                "localhost"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "header": [
-              {
-                "key": "User-Agent",
-                "value": "PostmanRuntime/7.39.1",
-                "system": true
-              },
-              {
-                "key": "Accept",
-                "value": "*/*",
-                "system": true
-              },
-              {
-                "key": "Cache-Control",
-                "value": "no-cache",
-                "system": true
-              },
-              {
-                "key": "Postman-Token",
-                "value": "9d63945c-f3e0-4406-838e-71f13452371c",
-                "system": true
-              },
-              {
-                "key": "Host",
-                "value": "localhost:3000",
-                "system": true
-              },
-              {
-                "key": "Accept-Encoding",
-                "value": "gzip, deflate, br",
-                "system": true
-              },
-              {
-                "key": "Connection",
-                "value": "keep-alive",
-                "system": true
-              }
-            ],
-            "method": "GET"
-          },
-          "response": [],
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "id": "20515cc7-60c1-48d2-851d-50cb6fb7580e",
-                "type": "text/javascript",
-                "exec": [
-                  "pm.test('404 after delete', ()=> pm.response.code === 404);"
-                ]
-              }
-            }
-          ]
-        },
-        "cursor": {
-          "ref": "4a68b49d-f023-4f23-a1c7-bc7701bc8558",
-          "length": 6,
-          "cycles": 1,
-          "position": 5,
-          "iteration": 0,
-          "httpRequestId": "2c59f818-2e56-413f-9d2e-76ec968ff595"
-        }
-      }
-    ],
+    "failures": [],
     "error": null
   }
 }
