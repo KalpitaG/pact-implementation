@@ -1,4 +1,4 @@
-=# Hands-on Notes – Pact Implementation
+# Hands-on Notes – Pact Implementation
 
 **Project**: ItemsConsumer ↔ ItemsCrudAPI
 
