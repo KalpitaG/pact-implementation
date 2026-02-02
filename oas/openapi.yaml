@@ -47,6 +47,63 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /users/{userId}:
+    get:
+      summary: Get user by ID
+      description: Retrieves a user by their unique identifier
+      operationId: getUserById
+      tags:
+        - Users
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: The unique identifier of the user
+          schema:
+            type: string
+            example: "user-123"
+      responses:
+        '200':
+          description: User found successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - name
+                  - email
+                properties:
+                  id:
+                    type: string
+                    description: Unique user identifier
+                    example: "user-123"
+                  name:
+                    type: string
+                    description: User's full name
+                    example: "John Doe"
+                  email:
+                    type: string
+                    format: email
+                    description: User's email address
+                    example: "john.doe@example.com"
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: When the user was created
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+                  code:
+                    type: string
+                    example: "USER_NOT_FOUND"
   /items/{id}:
     parameters:
       - name: id

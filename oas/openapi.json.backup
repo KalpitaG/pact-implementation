@@ -83,14 +83,10 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer"
-            }
+            "schema": { "type": "integer" }
           }
         ],
-   
-
-     "responses": {
+        "responses": {
           "200": {
             "description": "Found",
             "content": {
@@ -116,9 +112,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer"
-            }
+            "schema": { "type": "integer" }
           }
         ],
         "requestBody": {
@@ -163,9 +157,7 @@
             "name": "id",
             "in": "path",
             "required": true,
-            "schema": {
-              "type": "integer"
-            }
+            "schema": { "type": "integer" }
           }
         ],
         "responses": {
@@ -191,8 +183,8 @@
         "additionalProperties": true,
         "properties": {
           "id": {
-            "type": "integer",
-            "example": 1
+            "oneOf": [ { "type": "string" }, { "type": "integer" } ],
+            "example": "a1b2c3"
           },
           "name": { "type": "string", "example": "notebook" },
           "price": { "type": "number", "format": "float", "example": 12.99 },

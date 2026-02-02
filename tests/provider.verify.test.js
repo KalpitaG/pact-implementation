@@ -44,7 +44,7 @@ test(
             consumerVersionSelectors: [{ branch: "main", latest: true }], // match how you published
 
             // (B) Or from a local pact file (uncomment to use local file instead of a broker)
-             pactUrls: ["./pacts/ItemsConsumer-ItemsCrudAPI.json"],
+             //pactUrls: ["./pacts/ItemsConsumer-ItemsCrudAPI.json"],
 
             // Publish verification result back to the Broker (ignored if using pactUrls)
             publishVerificationResult: true,

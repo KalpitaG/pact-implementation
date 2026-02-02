@@ -4,15 +4,15 @@
   },
   "interactions": [
     {
-      "description": "a request add or create a new item without name",
+      "description": "a request to create a new item with only name",
       "providerStates": [
         {
-          "name": "no name is given when a new item is created"
+          "name": "the system accepts items with only name provided"
         }
       ],
       "request": {
         "body": {
-          "price": 200
+          "name": "Free Sample"
         },
         "headers": {
           "Content-Type": "application/json"
@@ -22,11 +22,140 @@
       },
       "response": {
         "body": {
-          "error": "name required"
+          "id": 124,
+          "name": "Free Sample",
+          "price": 0
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.price": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 201
+      }
+    },
+    {
+      "description": "a request to create a new item with valid data",
+      "providerStates": [
+        {
+          "name": "the system is ready to accept new items"
+        }
+      ],
+      "request": {
+        "body": {
+          "name": "Gaming Mouse",
+          "price": 79.99
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/items"
+      },
+      "response": {
+        "body": {
+          "id": 123,
+          "name": "Gaming Mouse",
+          "price": 79.99
         },
         "headers": {
           "Content-Type": "application/json",
-          "content-Type": "application/json"
+          "Location": "/items/123"
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.price": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            }
+          },
+          "header": {
+            "Location": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "status": {}
+        },
+        "status": 201
+      }
+    },
+    {
+      "description": "a request to create an item with invalid data",
+      "providerStates": [
+        {
+          "name": "the system validates input data"
+        }
+      ],
+      "request": {
+        "body": {
+          "name": "",
+          "price": -10
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "path": "/items"
+      },
+      "response": {
+        "body": {
+          "error": "Invalid input data"
+        },
+        "headers": {
+          "Content-Type": "application/json"
         },
         "matchingRules": {
           "body": {
@@ -46,16 +175,15 @@
       }
     },
     {
-      "description": "a request to add a new item to the database",
+      "description": "a request to create an item without name",
       "providerStates": [
         {
-          "name": "a name is provided for the item that needs to be added"
+          "name": "the system requires name for new items"
         }
       ],
       "request": {
         "body": {
-          "name": "Laptop",
-          "price": 200
+          "price": 50
         },
         "headers": {
           "Content-Type": "application/json"
@@ -65,37 +193,18 @@
       },
       "response": {
         "body": {
-          "id": 3,
-          "name": "Laptop",
-          "price": 200
+          "error": "name required"
         },
         "headers": {
-          "Content-Type": "application/json",
-          "content-Type": "application/json"
+          "Content-Type": "application/json"
         },
         "matchingRules": {
           "body": {
-            "$.id": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "integer"
-                }
-              ]
-            },
-            "$.name": {
+            "$.error": {
               "combine": "AND",
               "matchers": [
                 {
                   "match": "type"
-                }
-              ]
-            },
-            "$.price": {
-              "combine": "AND",
-              "matchers": [
-                {
-                  "match": "integer"
                 }
               ]
             }
@@ -103,38 +212,105 @@
           "header": {},
           "status": {}
         },
-        "status": 201
+        "status": 400
       }
     },
     {
-      "description": "a request to replace the parameters of the item",
+      "description": "a request to delete item with id 1",
       "providerStates": [
         {
-          "name": "an item with that id exists and can be replaced"
+          "name": "an item with id 1 exists and can be deleted"
         }
       ],
       "request": {
-        "body": {
-          "name": "Mobile",
-          "price": 100
-        },
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "method": "PUT",
+        "method": "DELETE",
         "path": "/items/1"
       },
       "response": {
+        "status": 204
+      }
+    },
+    {
+      "description": "a request to delete item with id 2 expecting 200 response",
+      "providerStates": [
+        {
+          "name": "an item with id 2 exists and can be deleted with 200 response"
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "path": "/items/2"
+      },
+      "response": {
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to delete non-existent item with id 999",
+      "providerStates": [
+        {
+          "name": "no item with id 999 exists"
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "path": "/items/999"
+      },
+      "response": {
         "body": {
-          "id": 1,
-          "name": "Mobile",
-          "price": 100
+          "error": "not found"
         },
         "headers": {
           "Content-Type": "application/json"
         },
         "matchingRules": {
           "body": {
+            "$.error": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 404
+      }
+    },
+    {
+      "description": "a request to get item with createdAt field",
+      "providerStates": [
+        {
+          "name": "an item exists with timestamp information"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/items/1"
+      },
+      "response": {
+        "body": {
+          "createdAt": "2025-01-10T12:00:00Z",
+          "id": 1,
+          "name": "Timestamped Item",
+          "price": 150
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.createdAt": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
             "$.id": {
               "combine": "AND",
               "matchers": [
@@ -155,7 +331,7 @@
               "combine": "AND",
               "matchers": [
                 {
-                  "match": "integer"
+                  "match": "decimal"
                 }
               ]
             }
@@ -167,10 +343,98 @@
       }
     },
     {
-      "description": "a request to return all items",
+      "description": "a request to get item with id 1",
       "providerStates": [
         {
-          "name": "items exist"
+          "name": "an item with id 1 exists"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/items/1"
+      },
+      "response": {
+        "body": {
+          "id": 1,
+          "name": "Laptop",
+          "price": 299.99
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.price": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to get non-existent item with id 999",
+      "providerStates": [
+        {
+          "name": "no item with id 999 exists"
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "path": "/items/999"
+      },
+      "response": {
+        "body": {
+          "error": "not found"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.error": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 404
+      }
+    },
+    {
+      "description": "a request to list all items",
+      "providerStates": [
+        {
+          "name": "items exist in the system"
         }
       ],
       "request": {
@@ -181,8 +445,8 @@
         "body": [
           {
             "id": 1,
-            "name": "Alpha",
-            "price": 10
+            "name": "Laptop",
+            "price": 299.99
           }
         ],
         "headers": {
@@ -198,6 +462,30 @@
                   "min": 1
                 }
               ]
+            },
+            "$[*].id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$[*].name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$[*].price": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
             }
           },
           "header": {},
@@ -207,22 +495,18 @@
       }
     },
     {
-      "description": "a request to return an item of a specific id",
+      "description": "a request to list all items when none exist",
       "providerStates": [
         {
-          "name": "the item for that id exists"
+          "name": "no items exist in the system"
         }
       ],
       "request": {
         "method": "GET",
-        "path": "/items/1"
+        "path": "/items"
       },
       "response": {
-        "body": {
-          "id": 1,
-          "name": "Alpha",
-          "price": 10
-        },
+        "body": [],
         "headers": {
           "Content-Type": "application/json"
         },
@@ -230,15 +514,124 @@
       }
     },
     {
-      "description": "a request to return an item with id 9",
+      "description": "a request to update item with id 1",
       "providerStates": [
         {
-          "name": "an item does not exist for the specified id"
+          "name": "an item with id 1 exists and can be updated"
         }
       ],
       "request": {
-        "method": "GET",
-        "path": "/items/9"
+        "body": {
+          "name": "Updated Laptop",
+          "price": 399.99
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "PUT",
+        "path": "/items/1"
+      },
+      "response": {
+        "body": {
+          "id": 1,
+          "name": "Updated Laptop",
+          "price": 399.99
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.id": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "integer"
+                }
+              ]
+            },
+            "$.name": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            },
+            "$.price": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "decimal"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 200
+      }
+    },
+    {
+      "description": "a request to update item with invalid data",
+      "providerStates": [
+        {
+          "name": "an item with id 1 exists but validation is enforced"
+        }
+      ],
+      "request": {
+        "body": {
+          "name": "",
+          "price": -50
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "PUT",
+        "path": "/items/1"
+      },
+      "response": {
+        "body": {
+          "error": "Invalid input data"
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "matchingRules": {
+          "body": {
+            "$.error": {
+              "combine": "AND",
+              "matchers": [
+                {
+                  "match": "type"
+                }
+              ]
+            }
+          },
+          "header": {},
+          "status": {}
+        },
+        "status": 400
+      }
+    },
+    {
+      "description": "a request to update non-existent item with id 999",
+      "providerStates": [
+        {
+          "name": "no item with id 999 exists"
+        }
+      ],
+      "request": {
+        "body": {
+          "name": "Non-existent Item",
+          "price": 100
+        },
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "method": "PUT",
+        "path": "/items/999"
       },
       "response": {
         "body": {
