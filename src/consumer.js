@@ -49,3 +49,17 @@ export async function getUserById(baseUrl, userId) {
         throw new Error(`Failed to get user: ${error.response?.status || error.message}`);
     }
 }
+
+// Search items by name or price range
+export async function searchItems(baseUrl, { q, minPrice, maxPrice } = {}) {
+    const params = new URLSearchParams();
+    if (q) params.append('q', q);
+    if (minPrice !== undefined) params.append('minPrice', minPrice);
+    if (maxPrice !== undefined) params.append('maxPrice', maxPrice);
+    
+    const queryString = params.toString();
+    const url = `${baseUrl}/items/search${queryString ? `?${queryString}` : ''}`;
+    
+    const res = await axios.get(url);
+    return res.data;
+}

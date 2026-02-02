@@ -47,6 +47,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+  /items/search:
+    get:
+      summary: Search items
+      description: Search for items by name or price range
+      operationId: searchItems
+      tags:
+        - Items
+      parameters:
+        - name: q
+          in: query
+          required: false
+          description: Search query to match item names
+          schema:
+            type: string
+            example: "notebook"
+        - name: minPrice
+          in: query
+          required: false
+          description: Minimum price filter
+          schema:
+            type: number
+            format: float
+            example: 5.00
+        - name: maxPrice
+          in: query
+          required: false
+          description: Maximum price filter
+          schema:
+            type: number
+            format: float
+            example: 50.00
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Item'
+                  total:
+                    type: integer
+                    description: Total number of matching items
+                    example: 5
+                  query:
+                    type: string
+                    description: The search query used
+                    example: "notebook"
   /users/{userId}:
     get:
       summary: Get user by ID
