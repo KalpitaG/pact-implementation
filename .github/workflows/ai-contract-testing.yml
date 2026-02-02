@@ -1,0 +1,115 @@
+# =============================================================================
+# AI Contract Testing - Consumer Repo Workflow
+# =============================================================================
+# This is a thin workflow that triggers when the 'contract-testing' label
+# is added to a PR. It calls the central repo's reusable workflow.
+#
+# To use this in your repo:
+# 1. Copy this file to .github/workflows/ai-contract-testing.yml
+# 2. Add PAT_TOKEN secret to your repo (Personal Access Token with repo scope)
+# 3. Add 'contract-testing' label to a PR to trigger
+#
+# =============================================================================
+
+name: AI Contract Testing
+
+on:
+  pull_request:
+    types: [labeled]
+  
+  # Also trigger on comments for revision requests
+  issue_comment:
+    types: [created]
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Trigger on Label Added
+  # ---------------------------------------------------------------------------
+  generate-on-label:
+    name: Generate Tests (Label Trigger)
+    if: |
+      github.event_name == 'pull_request' && 
+      github.event.action == 'labeled' && 
+      github.event.label.name == 'contract-testing'
+    uses: KalpitaG/ai-contract-testing-demo/.github/workflows/generate-tests.yml@main
+    with:
+      repository: ${{ github.repository }}
+      pr_number: ${{ github.event.pull_request.number }}
+      target_repo: ${{ github.repository }}
+    secrets:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      PACTFLOW_TOKEN: ${{ secrets.PACTFLOW_TOKEN }}
+      PACTFLOW_BASE_URL: ${{ secrets.PACTFLOW_BASE_URL }}
+      PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+      LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
+      LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+      # JIRA secrets - optional, omit if not using JIRA
+      # JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+      # JIRA_EMAIL: ${{ secrets.JIRA_EMAIL }}
+      # JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+
+  # ---------------------------------------------------------------------------
+  # Trigger on Revision Comment
+  # ---------------------------------------------------------------------------
+  check-revision-comment:
+    name: Check for Revision Request
+    if: |
+      github.event_name == 'issue_comment' &&
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, 'ai-revise:')
+    runs-on: ubuntu-latest
+    outputs:
+      should_revise: ${{ steps.check.outputs.should_revise }}
+      pr_number: ${{ steps.check.outputs.pr_number }}
+      feedback: ${{ steps.check.outputs.feedback }}
+    steps:
+      - name: Check comment and extract feedback
+        id: check
+        env:
+          COMMENT_BODY: ${{ github.event.comment.body }}
+        run: |
+          # Extract feedback from comment (everything after "ai-revise:")
+          FEEDBACK=$(echo "$COMMENT_BODY" | sed 's/^ai-revise:\s*//')
+          
+          if [ -z "$FEEDBACK" ] || [ "$FEEDBACK" == "$COMMENT_BODY" ]; then
+            echo "No valid feedback found in comment"
+            echo "should_revise=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+          
+          echo "should_revise=true" >> $GITHUB_OUTPUT
+          echo "pr_number=${{ github.event.issue.number }}" >> $GITHUB_OUTPUT
+          echo "feedback=${FEEDBACK}" >> $GITHUB_OUTPUT
+          
+          echo "Revision requested with feedback: $FEEDBACK"
+  
+  # TODO: Implement revision workflow
+  # For now, just acknowledge the revision request
+  acknowledge-revision:
+    name: Acknowledge Revision Request
+    needs: check-revision-comment
+    if: needs.check-revision-comment.outputs.should_revise == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: React to comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          # Add a reaction to acknowledge
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
+            -f content='eyes'
+          
+          # Comment acknowledgment
+          gh pr comment ${{ needs.check-revision-comment.outputs.pr_number }} \
+            --repo ${{ github.repository }} \
+            --body "🔄 **Revision Request Received**
+          
+          Feedback: _${{ needs.check-revision-comment.outputs.feedback }}_
+          
+          I'll regenerate the tests with your feedback. This may take a few minutes...
+          
+          ---
+          *Note: Full revision support coming soon. For now, please manually adjust the generated tests or wait for the next iteration.*"

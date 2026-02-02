@@ -36,3 +36,16 @@ export async function deleteItem(baseUrl, id) {
     const res = await axios.delete(`${baseUrl}/items/${id}`);
     return res.status; // should be 204
 }
+
+// GET user by ID
+export async function getUserById(baseUrl, userId) {
+    try {
+        const res = await axios.get(`${baseUrl}/users/${userId}`);
+        return res.data;
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            return null;
+        }
+        throw new Error(`Failed to get user: ${error.response?.status || error.message}`);
+    }
+}
