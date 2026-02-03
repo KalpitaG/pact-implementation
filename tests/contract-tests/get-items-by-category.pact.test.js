@@ -5,32 +5,30 @@ import { describe, test, expect } from "@jest/globals";
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
-    consumer: 'ConsumerService',
-    provider: 'ProviderService',
+    consumer: 'ItemConsumer',
+    provider: 'CategoryProvider',
 });
 
 describe('Consumer Pact Tests', () => {
     test('should get items by category', async () => {
         provider
-            .given('a category with ID 1 exists and has items')
-            .uponReceiving('a request to get items by category')
-            .withRequest({
-                method: 'GET',
-                path: '/categories/1/items',
-            })
+            .given('category with ID 123 exists and has items')
+            .uponReceiving('a request to get items for category 123')
+            .withRequest({ method: 'GET', path: '/categories/123/items' })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
                 body: MatchersV3.eachLike({
-                    id: MatchersV3.integer(1),
-                    name: MatchersV3.string('Item 1'),
-                    price: MatchersV3.integer(10),
-                }),
+                    id: MatchersV3.uuid(),
+                    name: MatchersV3.string(),
+                    price: MatchersV3.integer(100)
+                })
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const result = await getItemsByCategory(mockProvider.url, 1);
+            const result = await getItemsByCategory(mockProvider.url, '123');
             expect(result).toBeDefined();
+            expect(result.length).toBeGreaterThan(0);
         });
     });
 });

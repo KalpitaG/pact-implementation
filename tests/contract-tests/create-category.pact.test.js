@@ -5,8 +5,8 @@ import { describe, test, expect } from "@jest/globals";
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
-    consumer: 'ConsumerService',
-    provider: 'ProviderService',
+    consumer: 'ItemConsumer',
+    provider: 'CategoryProvider',
 });
 
 describe('Consumer Pact Tests', () => {
@@ -19,24 +19,24 @@ describe('Consumer Pact Tests', () => {
                 path: '/categories',
                 headers: { 'Content-Type': 'application/json' },
                 body: {
-                    name: 'New Category',
-                    description: 'New Description',
-                },
+                    name: 'new category',
+                    description: 'category description'
+                }
             })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
                 body: {
-                    id: MatchersV3.integer(1),
-                    name: MatchersV3.string('New Category'),
-                    description: MatchersV3.string('New Description'),
-                },
+                    id: MatchersV3.uuid(),
+                    name: 'new category',
+                    description: 'category description'
+                }
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const result = await createCategory(mockProvider.url, { name: 'New Category', description: 'New Description' });
+            const result = await createCategory(mockProvider.url, { name: 'new category', description: 'category description' });
             expect(result).toBeDefined();
-            expect(result.name).toBe('New Category');
+            expect(result.name).toBe('new category');
         });
     });
 });
