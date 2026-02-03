@@ -8,8 +8,8 @@ import {describe, test, expect} from "@jest/globals";
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
-    consumer: 'ItemsConsumer',
-    provider: 'ItemsCrudAPI'
+    consumer: 'ConsumerService',
+    provider: 'ProviderService'
 });
 
 const EXPECTED_ITEM_BODY = {id: 1, name: "Alpha", price: 10}
