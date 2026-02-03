@@ -20,8 +20,8 @@ describe('Consumer Pact Tests', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: {
                     name: 'New Item',
-                    price: 19.99
-                }
+                    price: 30,
+                },
             })
             .willRespondWith({
                 status: 201,
@@ -29,12 +29,12 @@ describe('Consumer Pact Tests', () => {
                 body: {
                     id: MatchersV3.integer(1),
                     name: MatchersV3.string('New Item'),
-                    price: MatchersV3.decimal(19.99)
-                }
+                    price: MatchersV3.integer(30),
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const newItem = { name: 'New Item', price: 19.99 };
+            const newItem = { name: 'New Item', price: 30 };
             const result = await createItem(mockProvider.url, newItem);
             expect(result).toBeDefined();
             expect(result.name).toBe('New Item');

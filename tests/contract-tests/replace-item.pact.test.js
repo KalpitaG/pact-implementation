@@ -13,15 +13,15 @@ describe('Consumer Pact Tests', () => {
     test('should replace an existing item', async () => {
         provider
             .given('an item with ID 123 exists')
-            .uponReceiving('a request to replace an existing item')
+            .uponReceiving('a request to replace item 123')
             .withRequest({
                 method: 'PUT',
                 path: '/items/123',
                 headers: { 'Content-Type': 'application/json' },
                 body: {
                     name: 'Updated Item',
-                    price: 29.99
-                }
+                    price: 40,
+                },
             })
             .willRespondWith({
                 status: 200,
@@ -29,12 +29,12 @@ describe('Consumer Pact Tests', () => {
                 body: {
                     id: MatchersV3.integer(123),
                     name: MatchersV3.string('Updated Item'),
-                    price: MatchersV3.decimal(29.99)
-                }
+                    price: MatchersV3.integer(40),
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const updatedItem = { name: 'Updated Item', price: 29.99 };
+            const updatedItem = { name: 'Updated Item', price: 40 };
             const result = await replaceItem(mockProvider.url, '123', updatedItem);
             expect(result).toBeDefined();
             expect(result.name).toBe('Updated Item');

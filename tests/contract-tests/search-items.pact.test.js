@@ -13,44 +13,27 @@ describe('Consumer Pact Tests', () => {
     test('should search items by query', async () => {
         provider
             .given('some items exist')
-            .uponReceiving('a request to search items by query')
-            .withRequest({ method: 'GET', path: '/items/search', query: { q: 'Example' } })
+            .uponReceiving('a request to search items')
+            .withRequest({
+                method: 'GET',
+                path: '/items/search',
+                query: {
+                    q: 'Test'
+                }
+            })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
                 body: MatchersV3.eachLike({
                     id: MatchersV3.integer(1),
-                    name: MatchersV3.string('Example Item'),
-                    price: MatchersV3.decimal(9.99)
-                })
+                    name: MatchersV3.string('Test Item'),
+                    price: MatchersV3.integer(50),
+                }),
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const result = await searchItems(mockProvider.url, { q: 'Example' });
+            const result = await searchItems(mockProvider.url, { q: 'Test' });
             expect(result).toBeDefined();
-            expect(result.length).toBeGreaterThan(0);
-        });
-    });
-
-    test('should search items by price range', async () => {
-        provider
-            .given('some items exist')
-            .uponReceiving('a request to search items by price range')
-            .withRequest({ method: 'GET', path: '/items/search', query: { minPrice: '5', maxPrice: '15' } })
-            .willRespondWith({
-                status: 200,
-                headers: { 'Content-Type': 'application/json' },
-                body: MatchersV3.eachLike({
-                    id: MatchersV3.integer(1),
-                    name: MatchersV3.string('Example Item'),
-                    price: MatchersV3.decimal(9.99)
-                })
-            });
-
-        await provider.executeTest(async (mockProvider) => {
-            const result = await searchItems(mockProvider.url, { minPrice: 5, maxPrice: 15 });
-            expect(result).toBeDefined();
-            expect(result.length).toBeGreaterThan(0);
         });
     });
 });

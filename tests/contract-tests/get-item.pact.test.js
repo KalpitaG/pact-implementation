@@ -10,19 +10,22 @@ const provider = new PactV3({
 });
 
 describe('Consumer Pact Tests', () => {
-    test('should get an item by ID when it exists', async () => {
+    test('should get an item by ID', async () => {
         provider
             .given('an item with ID 123 exists')
-            .uponReceiving('a request to get an item by ID')
-            .withRequest({ method: 'GET', path: '/items/123' })
+            .uponReceiving('a request to get item 123')
+            .withRequest({
+                method: 'GET',
+                path: '/items/123',
+            })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
                 body: {
                     id: MatchersV3.integer(123),
                     name: MatchersV3.string('Example Item'),
-                    price: MatchersV3.decimal(9.99)
-                }
+                    price: MatchersV3.integer(25),
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
@@ -32,23 +35,23 @@ describe('Consumer Pact Tests', () => {
         });
     });
 
-    test('should return 404 when item ID does not exist', async () => {
+    test('should return null if item does not exist', async () => {
         provider
             .given('no item with ID 456 exists')
-            .uponReceiving('a request to get an item by ID that does not exist')
-            .withRequest({ method: 'GET', path: '/items/456' })
+            .uponReceiving('a request to get item 456')
+            .withRequest({
+                method: 'GET',
+                path: '/items/456',
+            })
             .willRespondWith({
                 status: 404,
                 headers: { 'Content-Type': 'application/json' },
-                body: {"error": "Item not found"}
+                body: {},
             });
 
         await provider.executeTest(async (mockProvider) => {
-            try {
-                await getItem(mockProvider.url, '456');
-            } catch (error) {
-                expect(error.message).toContain('404');
-            }
+            const result = await getItem(mockProvider.url, '456');
+            expect(result).toEqual({});
         });
     });
 });
