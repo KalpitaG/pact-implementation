@@ -5,20 +5,23 @@ import { describe, test, expect } from "@jest/globals";
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
-    consumer: 'ConsumerService',
-    provider: 'ProviderService',
+    consumer: 'WebConsumer',
+    provider: 'ItemsAPI',
 });
 
 describe('listItems Pact Tests', () => {
-    test('should list items when no items exist', async () => {
+    test('should list all items when no items exist', async () => {
         provider
             .given('no items exist')
-            .uponReceiving('a request to list items')
-            .withRequest({ method: 'GET', path: '/items' })
+            .uponReceiving('a request to list all items')
+            .withRequest({
+                method: 'GET',
+                path: '/items',
+            })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: []
+                body: [],
             });
 
         await provider.executeTest(async (mockProvider) => {
@@ -27,19 +30,22 @@ describe('listItems Pact Tests', () => {
         });
     });
 
-    test('should list items when items exist', async () => {
+    test('should list all items when some items exist', async () => {
         provider
             .given('some items exist')
-            .uponReceiving('a request to list items')
-            .withRequest({ method: 'GET', path: '/items' })
+            .uponReceiving('a request to list all items')
+            .withRequest({
+                method: 'GET',
+                path: '/items',
+            })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
                 body: MatchersV3.eachLike({
                     id: MatchersV3.integer(1),
-                    name: MatchersV3.string('Item 1'),
-                    price: MatchersV3.integer(10)
-                })
+                    name: MatchersV3.string('Example Item'),
+                    price: MatchersV3.number(9.99),
+                }),
             });
 
         await provider.executeTest(async (mockProvider) => {

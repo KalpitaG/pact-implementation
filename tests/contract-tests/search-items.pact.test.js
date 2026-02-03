@@ -5,8 +5,8 @@ import { describe, test, expect } from "@jest/globals";
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
-    consumer: 'ConsumerService',
-    provider: 'ProviderService',
+    consumer: 'WebConsumer',
+    provider: 'ItemsAPI',
 });
 
 describe('searchItems Pact Tests', () => {
@@ -17,46 +17,46 @@ describe('searchItems Pact Tests', () => {
             .withRequest({
                 method: 'GET',
                 path: '/items/search',
-                query: { q: 'Item' }
+                query: { q: 'example' }
             })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
                 body: MatchersV3.eachLike({
                     id: MatchersV3.integer(1),
-                    name: MatchersV3.string('Item'),
-                    price: MatchersV3.integer(10)
-                })
+                    name: MatchersV3.string('Example Item'),
+                    price: MatchersV3.number(9.99),
+                }),
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const result = await searchItems(mockProvider.url, { q: 'Item' });
+            const result = await searchItems(mockProvider.url, { q: 'example' });
             expect(result).toBeDefined();
             expect(result.length).toBeGreaterThan(0);
         });
     });
 
-    test('should search items by price range', async () => {
+    test('should search items by minPrice and maxPrice', async () => {
         provider
             .given('some items exist')
-            .uponReceiving('a request to search items by price range')
+            .uponReceiving('a request to search items by minPrice and maxPrice')
             .withRequest({
                 method: 'GET',
                 path: '/items/search',
-                query: { minPrice: '10', maxPrice: '20' }
+                query: { minPrice: '5', maxPrice: '15' }
             })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
                 body: MatchersV3.eachLike({
                     id: MatchersV3.integer(1),
-                    name: MatchersV3.string('Item'),
-                    price: MatchersV3.integer(10)
-                })
+                    name: MatchersV3.string('Example Item'),
+                    price: MatchersV3.number(9.99),
+                }),
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const result = await searchItems(mockProvider.url, { minPrice: 10, maxPrice: 20 });
+            const result = await searchItems(mockProvider.url, { minPrice: 5, maxPrice: 15 });
             expect(result).toBeDefined();
             expect(result.length).toBeGreaterThan(0);
         });
