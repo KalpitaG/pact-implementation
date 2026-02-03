@@ -63,3 +63,9 @@ export async function searchItems(baseUrl, { q, minPrice, maxPrice } = {}) {
     const res = await axios.get(url);
     return res.data;
 }
+
+// Get item statistics - aggregated data
+export async function getItemStats(baseUrl) {
+    const res = await axios.get(`${baseUrl}/items/stats`);
+    return res.data;
+}
