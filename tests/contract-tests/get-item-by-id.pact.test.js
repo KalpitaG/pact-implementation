@@ -1,7 +1,7 @@
 import path from 'path';
 import { PactV3, MatchersV3 } from "@pact-foundation/pact";
-import { getItem } from "../../src/consumer.js";
 import { describe, test, expect } from "@jest/globals";
+import { getItem } from '../../src/consumer.js';
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
@@ -28,9 +28,9 @@ describe('Consumer Pact Tests', () => {
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const result = await getItem(mockProvider.url, "123");
+            const result = await getItem(mockProvider.url, '123');
             expect(result).toBeDefined();
-            expect(result.id).toBeGreaterThan(0);
+            expect(result.id).toBe(123);
         });
     });
 });
