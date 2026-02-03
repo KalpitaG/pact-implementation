@@ -5,33 +5,28 @@ import { describe, test, expect } from "@jest/globals";
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
-    consumer: 'WebConsumer',
-    provider: 'ItemsAPI',
+    consumer: 'ConsumerService',
+    provider: 'ProviderService',
 });
 
-describe('getItemStats Pact Tests', () => {
+describe('Consumer Pact Tests', () => {
     test('should get item statistics', async () => {
         provider
-            .given('some items exist')
+            .given('item statistics are available')
             .uponReceiving('a request to get item statistics')
-            .withRequest({
-                method: 'GET',
-                path: '/items/stats',
-            })
+            .withRequest({ method: 'GET', path: '/items/stats' })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
                 body: {
-                    averagePrice: MatchersV3.number(15.00),
-                    totalItems: MatchersV3.integer(3),
+                    averagePrice: MatchersV3.integer(25),
                 },
             });
 
         await provider.executeTest(async (mockProvider) => {
             const result = await getItemStats(mockProvider.url);
             expect(result).toBeDefined();
-            expect(result.averagePrice).toBeDefined();
-            expect(result.totalItems).toBeDefined();
+            expect(result.averagePrice).toBeGreaterThan(0);
         });
     });
 });

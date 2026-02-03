@@ -5,22 +5,22 @@ import { describe, test, expect } from "@jest/globals";
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
-    consumer: 'WebConsumer',
-    provider: 'ItemsAPI',
+    consumer: 'ConsumerService',
+    provider: 'ProviderService',
 });
 
-describe('replaceItem Pact Tests', () => {
+describe('Consumer Pact Tests', () => {
     test('should replace an existing item', async () => {
         provider
-            .given('an item with ID 1 exists')
-            .uponReceiving('a request to replace an item')
+            .given('an item with id 1 exists')
+            .uponReceiving('a request to replace item with id 1')
             .withRequest({
                 method: 'PUT',
                 path: '/items/1',
                 headers: { 'Content-Type': 'application/json' },
                 body: {
                     name: 'Updated Item',
-                    price: 29.99,
+                    price: 25,
                 },
             })
             .willRespondWith({
@@ -29,13 +29,12 @@ describe('replaceItem Pact Tests', () => {
                 body: {
                     id: MatchersV3.integer(1),
                     name: MatchersV3.string('Updated Item'),
-                    price: MatchersV3.number(29.99),
+                    price: MatchersV3.integer(25)
                 },
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const updatedItem = { name: 'Updated Item', price: 29.99 };
-            const result = await replaceItem(mockProvider.url, '1', updatedItem);
+            const result = await replaceItem(mockProvider.url, 1, { name: 'Updated Item', price: 25 });
             expect(result).toBeDefined();
             expect(result.name).toBe('Updated Item');
         });

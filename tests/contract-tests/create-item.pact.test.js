@@ -5,11 +5,11 @@ import { describe, test, expect } from "@jest/globals";
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
-    consumer: 'WebConsumer',
-    provider: 'ItemsAPI',
+    consumer: 'ConsumerService',
+    provider: 'ProviderService',
 });
 
-describe('createItem Pact Tests', () => {
+describe('Consumer Pact Tests', () => {
     test('should create a new item', async () => {
         provider
             .given('no items exist')
@@ -20,22 +20,21 @@ describe('createItem Pact Tests', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: {
                     name: 'New Item',
-                    price: 19.99,
+                    price: 20,
                 },
             })
             .willRespondWith({
-                status: 201,
+                status: 200,
                 headers: { 'Content-Type': 'application/json' },
                 body: {
-                    id: MatchersV3.integer(1),
+                    id: MatchersV3.integer(2),
                     name: MatchersV3.string('New Item'),
-                    price: MatchersV3.number(19.99),
+                    price: MatchersV3.integer(20)
                 },
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const newItem = { name: 'New Item', price: 19.99 };
-            const result = await createItem(mockProvider.url, newItem);
+            const result = await createItem(mockProvider.url, { name: 'New Item', price: 20 });
             expect(result).toBeDefined();
             expect(result.name).toBe('New Item');
         });

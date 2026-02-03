@@ -5,25 +5,22 @@ import { describe, test, expect } from "@jest/globals";
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
-    consumer: 'WebConsumer',
-    provider: 'ItemsAPI',
+    consumer: 'ConsumerService',
+    provider: 'ProviderService',
 });
 
-describe('deleteItem Pact Tests', () => {
+describe('Consumer Pact Tests', () => {
     test('should delete an item', async () => {
         provider
-            .given('an item with ID 1 exists')
-            .uponReceiving('a request to delete an item')
-            .withRequest({
-                method: 'DELETE',
-                path: '/items/1',
-            })
+            .given('an item with id 1 exists')
+            .uponReceiving('a request to delete item with id 1')
+            .withRequest({ method: 'DELETE', path: '/items/1' })
             .willRespondWith({
                 status: 204,
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const result = await deleteItem(mockProvider.url, '1');
+            const result = await deleteItem(mockProvider.url, 1);
             expect(result).toBe(204);
         });
     });
