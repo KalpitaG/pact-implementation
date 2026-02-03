@@ -7,6 +7,7 @@
 # TRIGGERS:
 #   1. Add label "contract-testing" to PR → Generates tests
 #   2. Comment "ai-revise: <feedback>" on Test PR → Revises tests
+#   3. Merge Test PR → Publishes pacts to Pactflow
 #
 # =============================================================================
 
@@ -15,7 +16,7 @@ name: AI Contract Testing
 on:
   # Trigger 1: Label added to PR
   pull_request:
-    types: [labeled]
+    types: [labeled, closed]
   
   # Trigger 2: Comment on PR (for revisions)
   issue_comment:
@@ -67,3 +68,59 @@ jobs:
       PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
       LANGFUSE_PUBLIC_KEY: ${{ secrets.LANGFUSE_PUBLIC_KEY }}
       LANGFUSE_SECRET_KEY: ${{ secrets.LANGFUSE_SECRET_KEY }}
+
+  # ===========================================================================
+  # JOB 3: Publish Pacts (triggered when Test PR is merged)
+  # ===========================================================================
+  publish-on-merge:
+    name: Publish Pacts to Pactflow
+    if: |
+      github.event_name == 'pull_request' &&
+      github.event.action == 'closed' &&
+      github.event.pull_request.merged == true &&
+      startsWith(github.event.pull_request.head.ref, 'contract-tests/pr-')
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Run Pact tests and generate contracts
+        run: npm test -- tests/contract-tests
+        env:
+          NODE_OPTIONS: '--experimental-vm-modules'
+          
+      - name: Publish Pacts to Pactflow
+        run: |
+          npx pact-broker publish ./pacts \
+            --broker-base-url=${{ secrets.PACTFLOW_BASE_URL }} \
+            --broker-token=${{ secrets.PACTFLOW_TOKEN }} \
+            --consumer-app-version=${{ github.sha }} \
+            --branch=${{ github.event.pull_request.base.ref }} \
+            --tag=${{ github.event.pull_request.base.ref }}
+            
+      - name: Comment on merged PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.PAT_TOKEN }}
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: ${{ github.event.pull_request.number }},
+              body: `✅ **Pacts Published to Pactflow!**\n\n` +
+                    `📦 Consumer Version: \`${{ github.sha }}\`\n` +
+                    `🌿 Branch: \`${{ github.event.pull_request.base.ref }}\`\n\n` +
+                    `View your pacts at: ${{ secrets.PACTFLOW_BASE_URL }}`
+            });
