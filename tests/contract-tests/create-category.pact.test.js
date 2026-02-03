@@ -10,7 +10,7 @@ const provider = new PactV3({
 });
 
 describe('Consumer Pact Tests', () => {
-    test('should create a category', async () => {
+    test('should create a category with optional icon', async () => {
         provider
             .given('no categories exist')
             .uponReceiving('a request to create a category')
@@ -29,7 +29,8 @@ describe('Consumer Pact Tests', () => {
                 body: {
                     id: MatchersV3.uuid(),
                     name: 'new category',
-                    description: 'category description'
+                    description: 'category description',
+                    icon: MatchersV3.string()
                 }
             });
 
