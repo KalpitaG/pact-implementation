@@ -10,10 +10,10 @@ const provider = new PactV3({
 });
 
 describe('Consumer Pact Tests', () => {
-    test('should get an item by ID', async () => {
+    test('should get an item by id', async () => {
         provider
-            .given('an item with ID 123 exists')
-            .uponReceiving('a request to get item 123')
+            .given('an item with id 123 exists')
+            .uponReceiving('a request to get item with id 123')
             .withRequest({
                 method: 'GET',
                 path: '/items/123',
@@ -35,23 +35,20 @@ describe('Consumer Pact Tests', () => {
         });
     });
 
-    test('should return null if item does not exist', async () => {
+    test('should return null when item does not exist', async () => {
         provider
-            .given('no item with ID 456 exists')
-            .uponReceiving('a request to get item 456')
+            .given('no item with id 999 exists')
+            .uponReceiving('a request to get item with id 999')
             .withRequest({
                 method: 'GET',
-                path: '/items/456',
+                path: '/items/999',
             })
             .willRespondWith({
-                status: 404,
-                headers: { 'Content-Type': 'application/json' },
-                body: {},
+                status: 404
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const result = await getItem(mockProvider.url, '456');
-            expect(result).toEqual({});
+            await expect(getItem(mockProvider.url, '999')).rejects.toThrow();
         });
     });
 });

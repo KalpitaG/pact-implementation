@@ -9,19 +9,16 @@ const provider = new PactV3({
     provider: 'ProviderService',
 });
 
-describe('Consumer Pact Tests', () => {
-    test('should list all items when no items exist', async () => {
+describe('listItems Pact Tests', () => {
+    test('should list items when no items exist', async () => {
         provider
             .given('no items exist')
             .uponReceiving('a request to list items')
-            .withRequest({
-                method: 'GET',
-                path: '/items',
-            })
+            .withRequest({ method: 'GET', path: '/items' })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: [],
+                body: []
             });
 
         await provider.executeTest(async (mockProvider) => {
@@ -30,27 +27,25 @@ describe('Consumer Pact Tests', () => {
         });
     });
 
-    test('should list all items when items exist', async () => {
+    test('should list items when items exist', async () => {
         provider
             .given('some items exist')
             .uponReceiving('a request to list items')
-            .withRequest({
-                method: 'GET',
-                path: '/items',
-            })
+            .withRequest({ method: 'GET', path: '/items' })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
                 body: MatchersV3.eachLike({
                     id: MatchersV3.integer(1),
                     name: MatchersV3.string('Item 1'),
-                    price: MatchersV3.integer(10),
-                }),
+                    price: MatchersV3.integer(10)
+                })
             });
 
         await provider.executeTest(async (mockProvider) => {
             const result = await listItems(mockProvider.url);
             expect(result).toBeDefined();
+            expect(result.length).toBeGreaterThan(0);
         });
     });
 });

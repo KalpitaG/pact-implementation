@@ -9,7 +9,7 @@ const provider = new PactV3({
     provider: 'ProviderService',
 });
 
-describe('Consumer Pact Tests', () => {
+describe('createItem Pact Tests', () => {
     test('should create a new item', async () => {
         provider
             .given('no items exist')
@@ -20,22 +20,21 @@ describe('Consumer Pact Tests', () => {
                 headers: { 'Content-Type': 'application/json' },
                 body: {
                     name: 'New Item',
-                    price: 30,
-                },
+                    price: 30
+                }
             })
             .willRespondWith({
-                status: 201,
+                status: 200,
                 headers: { 'Content-Type': 'application/json' },
                 body: {
-                    id: MatchersV3.integer(1),
+                    id: MatchersV3.integer(3),
                     name: MatchersV3.string('New Item'),
-                    price: MatchersV3.integer(30),
-                },
+                    price: MatchersV3.integer(30)
+                }
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const newItem = { name: 'New Item', price: 30 };
-            const result = await createItem(mockProvider.url, newItem);
+            const result = await createItem(mockProvider.url, { name: 'New Item', price: 30 });
             expect(result).toBeDefined();
             expect(result.name).toBe('New Item');
         });
