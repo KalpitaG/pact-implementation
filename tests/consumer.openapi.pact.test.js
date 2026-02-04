@@ -7,8 +7,8 @@ import {describe, test, expect} from "@jest/globals";
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
-    consumer: 'ItemsConsumer',
-    provider: 'ItemsCrudAPI'
+    consumer: 'ConsumerService',
+    provider: 'ProviderService'
 });
 
 // Expected item structure based on OpenAPI schema

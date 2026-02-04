@@ -69,3 +69,31 @@ export async function getItemStats(baseUrl) {
     const res = await axios.get(`${baseUrl}/items/stats`);
     return res.data;
 }
+
+// ============================================================
+// CATEGORIES API - New feature for organizing items
+// ============================================================
+
+// GET all categories
+export async function listCategories(baseUrl) {
+    const res = await axios.get(`${baseUrl}/categories`);
+    return res.data;
+}
+
+// GET category by ID
+export async function getCategoryById(baseUrl, categoryId) {
+    const res = await axios.get(`${baseUrl}/categories/${categoryId}`);
+    return res.data;
+}
+
+// POST create category
+export async function createCategory(baseUrl, { name, description }) {
+    const res = await axios.post(`${baseUrl}/categories`, { name, description });
+    return res.data;
+}
+
+// GET items in a category
+export async function getItemsByCategory(baseUrl, categoryId) {
+    const res = await axios.get(`${baseUrl}/categories/${categoryId}/items`);
+    return res.data;
+}
