@@ -97,9 +97,3 @@ export async function getItemsByCategory(baseUrl, categoryId) {
     const res = await axios.get(`${baseUrl}/categories/${categoryId}/items`);
     return res.data;
 }
-
-// GET discounted items
-export async function getDiscountedItems(baseUrl) {
-    const res = await axios.get(`${baseUrl}/items/discounted`);
-    return res.data;
-}
