@@ -1,0 +1,51 @@
+# =============================================================================
+# AI Contract Testing - Consumer Thin Caller
+# =============================================================================
+# 
+# Triggers:
+#   - Label 'contract-testing' added to PR → Generate tests
+#   - Comment 'ai-revise: <feedback>' → Revise tests
+#
+# =============================================================================
+
+name: AI Contract Testing
+
+on:
+  pull_request:
+    types: [labeled]
+  
+  issue_comment:
+    types: [created]
+
+jobs:
+  # ===========================================================================
+  # Trigger: Label 'contract-testing' added to PR
+  # ===========================================================================
+  generate-tests:
+    if: |
+      github.event_name == 'pull_request' && 
+      github.event.action == 'labeled' && 
+      github.event.label.name == 'contract-testing'
+    
+    uses: KalpitaG/ai-contract-testing-demo/.github/workflows/generate-tests.yml@main
+    with:
+      repository: ${{ github.repository }}
+      pr_number: ${{ github.event.pull_request.number }}
+      target_repo: ${{ github.repository }}
+    secrets: inherit
+
+  # ===========================================================================
+  # Trigger: Comment starts with 'ai-revise:'
+  # ===========================================================================
+  revise-tests:
+    if: |
+      github.event_name == 'issue_comment' && 
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, 'ai-revise:')
+    
+    uses: KalpitaG/ai-contract-testing-demo/.github/workflows/contract-revision.yml@main
+    with:
+      repository: ${{ github.repository }}
+      test_pr_number: ${{ github.event.issue.number }}
+      comment_body: ${{ github.event.comment.body }}
+    secrets: inherit
