@@ -36,3 +36,64 @@ export async function deleteItem(baseUrl, id) {
     const res = await axios.delete(`${baseUrl}/items/${id}`);
     return res.status; // should be 204
 }
+
+// GET user by ID
+export async function getUserById(baseUrl, userId) {
+    try {
+        const res = await axios.get(`${baseUrl}/users/${userId}`);
+        return res.data;
+    } catch (error) {
+        if (error.response && error.response.status === 404) {
+            return null;
+        }
+        throw new Error(`Failed to get user: ${error.response?.status || error.message}`);
+    }
+}
+
+// Search items by name or price range
+export async function searchItems(baseUrl, { q, minPrice, maxPrice } = {}) {
+    const params = new URLSearchParams();
+    if (q) params.append('q', q);
+    if (minPrice !== undefined) params.append('minPrice', minPrice);
+    if (maxPrice !== undefined) params.append('maxPrice', maxPrice);
+    
+    const queryString = params.toString();
+    const url = `${baseUrl}/items/search${queryString ? `?${queryString}` : ''}`;
+    
+    const res = await axios.get(url);
+    return res.data;
+}
+
+// Get item statistics - aggregated data
+export async function getItemStats(baseUrl) {
+    const res = await axios.get(`${baseUrl}/items/stats`);
+    return res.data;
+}
+
+// ============================================================
+// CATEGORIES API - New feature for organizing items
+// ============================================================
+
+// GET all categories
+export async function listCategories(baseUrl) {
+    const res = await axios.get(`${baseUrl}/categories`);
+    return res.data;
+}
+
+// GET category by ID
+export async function getCategoryById(baseUrl, categoryId) {
+    const res = await axios.get(`${baseUrl}/categories/${categoryId}`);
+    return res.data;
+}
+
+// POST create category
+export async function createCategory(baseUrl, { name, description }) {
+    const res = await axios.post(`${baseUrl}/categories`, { name, description });
+    return res.data;
+}
+
+// GET items in a category
+export async function getItemsByCategory(baseUrl, categoryId) {
+    const res = await axios.get(`${baseUrl}/categories/${categoryId}/items`);
+    return res.data;
+}
