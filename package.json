@@ -11,6 +11,8 @@
     "start:provider": "cross-env PORT=3001 node provider/provider-service.js",
     "test:web:consumer": "jest consumer-web/consumer-contract.spec.js",
     "publish:pact": "pact-broker publish ./pacts --consumer-app-version=1.0.3 --branch=main --broker-base-url=$PACT_BROKER_BASE_URL --broker-token=$PACT_BROKER_TOKEN",
+    "ai:publish:pact:feature": "pact-broker publish ./pacts --consumer-app-version=$GITHUB_SHA --branch=$GIT_BRANCH --broker-base-url=$PACTFLOW_BASE_URL --broker-token=$PACTFLOW_TOKEN",
+    "ai:publish:pact:main": "pact-broker publish ./pacts --consumer-app-version=$GITHUB_SHA --branch=main --broker-base-url=$PACTFLOW_BASE_URL --broker-token=$PACTFLOW_TOKEN",
     "start": "node server.js",
     "dev": "node server.js",
     "bdct:newman": "mkdir -p newman && npx newman run postman/items.collection.json -r json --reporter-json-export newman/results.json",
