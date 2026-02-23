@@ -70,9 +70,8 @@ export async function getItemStats(baseUrl) {
     return res.data;
 }
 
-// ============================================================
+
 // CATEGORIES API - New feature for organizing items
-// ============================================================
 
 // GET all categories
 export async function listCategories(baseUrl) {
