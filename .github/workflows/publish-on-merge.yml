@@ -1,0 +1,62 @@
+# =============================================================================
+# Publish Pact on Merge to Main
+# =============================================================================
+#
+# FLOW:
+#   1. Triggers when contract tests are merged into main
+#   2. Runs tests to generate fresh pact files
+#   3. Publishes to Pactflow tagged as branch=main
+#   4. This is what can-i-deploy checks against
+#
+# =============================================================================
+
+name: Publish Pact on Merge
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'tests/contract-tests/**'
+
+jobs:
+  publish-pact:
+    name: Publish Pact to Pactflow (main)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js 18
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run contract tests to generate pact files
+        run: |
+          NODE_OPTIONS='--experimental-vm-modules' npx jest tests/contract-tests/ \
+            --testPathPattern='\.pact\.test\.' \
+            --forceExit
+        continue-on-error: true
+
+      - name: Publish Pact to Pactflow (main branch)
+        env:
+          PACTFLOW_BASE_URL: ${{ secrets.PACTFLOW_BASE_URL }}
+          PACTFLOW_TOKEN: ${{ secrets.PACTFLOW_TOKEN }}
+          GITHUB_SHA: ${{ github.sha }}
+        run: |
+          if [ -d "./pacts" ] && [ -n "$(ls -A ./pacts 2>/dev/null)" ]; then
+            echo "Publishing pacts to Pactflow as main branch..."
+            ls -la ./pacts/
+            npm run ai:publish:pact:main
+            echo "✅ Pact published successfully tagged as main"
+          else
+            echo "⚠️ No pact files found - skipping publish"
+            exit 1
+          fi
