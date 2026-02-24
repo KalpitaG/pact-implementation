@@ -12,7 +12,7 @@ const provider = new PactV3({
 describe('Consumer Pact Tests', () => {
     test('should create a category', async () => {
         provider
-            .given('no categories exist')
+            .given('can create a category')
             .uponReceiving('a request to create a category')
             .withRequest({
                 method: 'POST',

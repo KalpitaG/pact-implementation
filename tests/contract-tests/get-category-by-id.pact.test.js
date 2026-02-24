@@ -10,10 +10,10 @@ const provider = new PactV3({
 });
 
 describe('Consumer Pact Tests', () => {
-    test('should get a category by ID', async () => {
+    test('should get a category by ID when it exists', async () => {
         provider
             .given('a category with ID 1 exists')
-            .uponReceiving('a request to get category with ID 1')
+            .uponReceiving('a request to get a category by ID')
             .withRequest({ method: 'GET', path: '/categories/1' })
             .willRespondWith({
                 status: 200,

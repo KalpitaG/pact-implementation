@@ -10,10 +10,10 @@ const provider = new PactV3({
 });
 
 describe('Consumer Pact Tests', () => {
-    test('should get items by category ID', async () => {
+    test('should get items by category when category exists with items', async () => {
         provider
-            .given('a category with ID 1 exists and has items')
-            .uponReceiving('a request to get items by category with ID 1')
+            .given('category 1 exists with some items')
+            .uponReceiving('a request to get items by category')
             .withRequest({ method: 'GET', path: '/categories/1/items' })
             .willRespondWith({
                 status: 200,
@@ -21,7 +21,7 @@ describe('Consumer Pact Tests', () => {
                 body: MatchersV3.eachLike({
                     id: MatchersV3.integer(1),
                     name: MatchersV3.string('Item 1'),
-                    price: MatchersV3.decimal(10.0)
+                    price: MatchersV3.integer(10)
                 })
             });
 
