@@ -39,4 +39,30 @@ describe('Consumer Pact Tests', () => {
             expect(result.name).toBe('New Category');
         });
     });
+
+    test('should not create a category with empty name', async () => {
+        provider
+            .given('cannot create a category with empty name')
+            .uponReceiving('a request to create a category with empty name')
+            .withRequest({
+                method: 'POST',
+                path: '/categories',
+                headers: { 'Content-Type': 'application/json' },
+                body: {
+                    name: '',
+                    description: 'New Description'
+                }
+            })
+            .willRespondWith({
+                status: 400,
+                headers: { 'Content-Type': 'application/json' },
+                body: {
+                    error: 'Name cannot be empty'
+                }
+            });
+
+        await provider.executeTest(async (mockProvider) => {
+            await expect(createCategory(mockProvider.url, { name: '', description: 'New Description' })).rejects.toThrow();
+        });
+    });
 });
