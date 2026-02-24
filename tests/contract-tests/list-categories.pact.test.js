@@ -10,10 +10,10 @@ const provider = new PactV3({
 });
 
 describe('Consumer Pact Tests', () => {
-    test('should list all categories when no categories exist', async () => {
+    test('should list categories when no categories exist', async () => {
         provider
             .given('no categories exist')
-            .uponReceiving('a request to list categories')
+            .uponReceiving('a request to list all categories')
             .withRequest({ method: 'GET', path: '/categories' })
             .willRespondWith({
                 status: 200,
@@ -23,15 +23,14 @@ describe('Consumer Pact Tests', () => {
 
         await provider.executeTest(async (mockProvider) => {
             const result = await listCategories(mockProvider.url);
-            expect(result).toBeDefined();
             expect(result).toEqual([]);
         });
     });
 
-    test('should list categories when they exist', async () => {
+    test('should list categories when some categories exist', async () => {
         provider
             .given('some categories exist')
-            .uponReceiving('a request to list categories')
+            .uponReceiving('a request to list all categories')
             .withRequest({ method: 'GET', path: '/categories' })
             .willRespondWith({
                 status: 200,

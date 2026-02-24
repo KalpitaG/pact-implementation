@@ -12,7 +12,7 @@ const provider = new PactV3({
 describe('Consumer Pact Tests', () => {
     test('should create a category', async () => {
         provider
-            .given('no categories exist')
+            .given('can create a category')
             .uponReceiving('a request to create a category')
             .withRequest({
                 method: 'POST',
@@ -37,6 +37,32 @@ describe('Consumer Pact Tests', () => {
             const result = await createCategory(mockProvider.url, { name: 'New Category', description: 'New Description' });
             expect(result).toBeDefined();
             expect(result.name).toBe('New Category');
+        });
+    });
+
+    test('should not create a category with empty name', async () => {
+        provider
+            .given('cannot create a category with empty name')
+            .uponReceiving('a request to create a category with empty name')
+            .withRequest({
+                method: 'POST',
+                path: '/categories',
+                headers: { 'Content-Type': 'application/json' },
+                body: {
+                    name: '',
+                    description: 'New Description'
+                }
+            })
+            .willRespondWith({
+                status: 400,
+                headers: { 'Content-Type': 'application/json' },
+                body: {
+                    error: 'Name cannot be empty'
+                }
+            });
+
+        await provider.executeTest(async (mockProvider) => {
+            await expect(createCategory(mockProvider.url, { name: '', description: 'New Description' })).rejects.toThrow();
         });
     });
 });
