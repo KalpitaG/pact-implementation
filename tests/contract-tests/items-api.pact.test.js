@@ -19,6 +19,7 @@ describe('Item API Pact Tests', () => {
             .withRequest({
                 method: 'GET',
                 path: '/items',
+                query: {},
             })
             .willRespondWith({
                 status: 200,

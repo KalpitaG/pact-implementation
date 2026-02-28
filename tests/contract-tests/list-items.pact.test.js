@@ -17,7 +17,9 @@ describe('listItems Pact Tests', () => {
             .withRequest({
                 method: 'GET',
                 path: '/items',
-                query: 'category=Electronics'
+                query: {
+                    category: MatchersV3.string('Electronics')
+                }
             })
             .willRespondWith({
                 status: 200,
@@ -46,7 +48,9 @@ describe('listItems Pact Tests', () => {
             .withRequest({
                 method: 'GET',
                 path: '/items',
-                query: 'inStock=true'
+                query: {
+                    inStock: MatchersV3.boolean(true)
+                }
             })
             .willRespondWith({
                 status: 200,

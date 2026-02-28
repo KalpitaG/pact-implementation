@@ -17,7 +17,7 @@ import {
     getUserProfile 
 } from "../../src/consumer.js";
 
-const { eachLike, like, integer, string } = MatchersV3;
+const { eachLike, like, integer, string, boolean } = MatchersV3;
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
@@ -33,6 +33,7 @@ describe('Example App Consumer Pact Tests', () => {
             .withRequest({
                 method: 'GET',
                 path: '/items',
+                query: {},
             })
             .willRespondWith({
                 status: 200,
@@ -64,7 +65,10 @@ describe('Example App Consumer Pact Tests', () => {
             .withRequest({
                 method: 'GET',
                 path: '/items',
-                query: 'category=Electronics&inStock=true',
+                query: {
+                    category: string('Electronics'),
+                    inStock: boolean(true),
+                },
             })
             .willRespondWith({
                 status: 200,
@@ -126,7 +130,9 @@ describe('Example App Consumer Pact Tests', () => {
             .withRequest({
                 method: 'GET',
                 path: '/items/search',
-                query: `q=${searchQuery}`,
+                query: {
+                    q: string(searchQuery),
+                },
             })
             .willRespondWith({
                 status: 200,

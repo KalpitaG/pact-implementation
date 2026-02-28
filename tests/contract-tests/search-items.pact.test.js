@@ -17,7 +17,9 @@ describe('searchItems Pact Tests', () => {
             .withRequest({
                 method: 'GET',
                 path: '/items/search',
-                query: 'q=term'
+                query: {
+                    q: MatchersV3.string('term')
+                }
             })
             .willRespondWith({
                 status: 200,
