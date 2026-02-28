@@ -1,15 +1,13 @@
-openapi: "3.0.3"
+openapi: 3.0.3
 info:
   title: PactProviderDemo API
+  description: |
+    Provider service API for the AI-powered contract testing pet project.
+    Consumer: ConsumerService (pact-implementation repo)
+    Provider: ProviderService (pact-provider-demo repo)
   version: 1.0.0
-  description: >
-    OpenAPI specification for the pact-provider-demo service.
-    This spec matches the provider's actual response shapes exactly.
 servers:
-  - url: "{baseUrl}"
-    variables:
-      baseUrl:
-        default: "http://localhost:3001"
+  - url: http://localhost:3001
 
 paths:
   # =========================================================================
@@ -24,24 +22,31 @@ paths:
         - name: category
           in: query
           required: false
-          description: Filter by category name
           schema:
             type: string
-            example: "electronics"
+          description: Filter by category name
         - name: inStock
           in: query
           required: false
-          description: Filter by stock status
           schema:
             type: string
             enum: ["true", "false"]
+          description: Filter by stock availability (sent as string in query params)
       responses:
         "200":
-          description: Wrapped list of items with total count
+          description: List of items
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ItemListResponse"
+                type: object
+                required: [items, total]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Item"
+                  total:
+                    type: integer
     post:
       summary: Create a new item
       operationId: createItem
@@ -51,64 +56,39 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateItemRequest"
+              type: object
+              required: [name, price]
+              properties:
+                name:
+                  type: string
+                price:
+                  type: number
+                category:
+                  type: string
+                inStock:
+                  type: boolean
       responses:
         "201":
-          description: Item created successfully
+          description: Item created
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Item"
-        "400":
-          description: Validation error - name and price are required
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
-
-  /items/search:
-    get:
-      summary: Search items by name
-      operationId: searchItems
-      tags: [Items]
-      parameters:
-        - name: q
-          in: query
-          required: true
-          description: Search query to match item names (case-insensitive)
-          schema:
-            type: string
-            example: "Item"
-      responses:
-        "200":
-          description: Search results with metadata
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SearchResponse"
-        "400":
-          description: Missing required query parameter q
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /items/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: Item ID (integer)
-        schema:
-          type: integer
-          example: 1
     get:
-      summary: Get a single item by ID
+      summary: Get item by ID
       operationId: getItem
       tags: [Items]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
-          description: Item found
+          description: Item details
           content:
             application/json:
               schema:
@@ -118,17 +98,33 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ItemNotFoundError"
+                $ref: "#/components/schemas/Error"
     put:
-      summary: Replace an item completely
+      summary: Replace an item (full update)
       operationId: replaceItem
       tags: [Items]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateItemRequest"
+              type: object
+              required: [name, price]
+              properties:
+                name:
+                  type: string
+                price:
+                  type: number
+                category:
+                  type: string
+                inStock:
+                  type: boolean
       responses:
         "200":
           description: Item replaced
@@ -136,28 +132,33 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Item"
-        "400":
-          description: Validation error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
         "404":
           description: Item not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ItemNotFoundError"
     patch:
       summary: Partially update an item
       operationId: updateItem
       tags: [Items]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PatchItemRequest"
+              type: object
+              properties:
+                name:
+                  type: string
+                price:
+                  type: number
+                category:
+                  type: string
+                inStock:
+                  type: boolean
       responses:
         "200":
           description: Item updated
@@ -167,23 +168,53 @@ paths:
                 $ref: "#/components/schemas/Item"
         "404":
           description: Item not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/ItemNotFoundError"
     delete:
       summary: Delete an item
       operationId: deleteItem
       tags: [Items]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "204":
-          description: Item deleted successfully (no content)
+          description: Item deleted (no content)
         "404":
           description: Item not found
+
+  /items/search:
+    get:
+      summary: Search items by query string
+      operationId: searchItems
+      tags: [Items]
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query (required — provider returns 400 without it)
+      responses:
+        "200":
+          description: Search results
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ItemNotFoundError"
+                type: object
+                required: [results, query, count]
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Item"
+                  query:
+                    type: string
+                  count:
+                    type: integer
+        "400":
+          description: Missing required query parameter q
 
   # =========================================================================
   # CATEGORIES
@@ -195,11 +226,19 @@ paths:
       tags: [Categories]
       responses:
         "200":
-          description: Wrapped list of categories with total count
+          description: List of categories
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CategoryListResponse"
+                type: object
+                required: [categories, total]
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Category"
+                  total:
+                    type: integer
     post:
       summary: Create a new category
       operationId: createCategory
@@ -209,388 +248,173 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateCategoryRequest"
+              type: object
+              required: [name]
+              properties:
+                name:
+                  type: string
+                slug:
+                  type: string
       responses:
         "201":
-          description: Category created successfully
+          description: Category created
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Category"
-        "400":
-          description: Validation error - name is required
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Error"
 
   /categories/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: Category ID (integer)
-        schema:
-          type: integer
-          example: 1
     get:
-      summary: Get a single category by ID
+      summary: Get category by ID
       operationId: getCategoryById
       tags: [Categories]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
-          description: Category found
+          description: Category details
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Category"
         "404":
           description: Category not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryNotFoundError"
 
   /categories/{id}/items:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: Category ID (integer)
-        schema:
-          type: integer
-          example: 1
     get:
-      summary: Get items belonging to a category
-      operationId: getItemsByCategory
+      summary: Get items in a category
+      operationId: getCategoryItems
       tags: [Categories]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
-          description: Category items with metadata
+          description: Items in this category
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CategoryItemsResponse"
+                type: object
+                required: [category, items, count]
+                properties:
+                  category:
+                    type: string
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Item"
+                  count:
+                    type: integer
         "404":
           description: Category not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/CategoryNotFoundError"
 
   # =========================================================================
   # USERS
   # =========================================================================
   /users/{id}:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: User ID (integer)
-        schema:
-          type: integer
-          example: 1
     get:
-      summary: Get user by ID (public info only, no email)
+      summary: Get user by ID (public info only — no email)
       operationId: getUserById
       tags: [Users]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
-          description: User found (email is excluded for privacy)
+          description: Public user info (id, username, role — NOT email)
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/UserPublic"
         "404":
           description: User not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserNotFoundError"
 
   /users/{id}/profile:
-    parameters:
-      - name: id
-        in: path
-        required: true
-        description: User ID (integer)
-        schema:
-          type: integer
-          example: 1
     get:
       summary: Get full user profile (includes email)
       operationId: getUserProfile
       tags: [Users]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         "200":
-          description: Full user profile
+          description: Full user profile including email
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserFull"
+                $ref: "#/components/schemas/UserProfile"
         "404":
           description: User not found
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UserNotFoundError"
 
-  # =========================================================================
-  # HEALTH
-  # =========================================================================
-  /health:
-    get:
-      summary: Health check
-      operationId: healthCheck
-      tags: [System]
-      responses:
-        "200":
-          description: Service is healthy
-          content:
-            application/json:
-              schema:
-                type: object
-                required: [status, timestamp]
-                properties:
-                  status:
-                    type: string
-                    example: "ok"
-                  timestamp:
-                    type: string
-                    format: date-time
-
-# ===========================================================================
-# SCHEMAS — These match the provider's ACTUAL response shapes
-# ===========================================================================
 components:
   schemas:
-    # --- Item schemas ---
     Item:
       type: object
-      required: [id, name, price, category, inStock]
+      required: [id, name, price]
       properties:
         id:
           type: integer
-          example: 1
-        name:
-          type: string
-          example: "Item One"
-        price:
-          type: number
-          format: float
-          example: 10.99
-        category:
-          type: string
-          example: "electronics"
-        inStock:
-          type: boolean
-          example: true
-
-    ItemListResponse:
-      type: object
-      required: [items, total]
-      description: "GET /items returns items wrapped in an object with total count"
-      properties:
-        items:
-          type: array
-          items:
-            $ref: "#/components/schemas/Item"
-        total:
-          type: integer
-          example: 3
-
-    SearchResponse:
-      type: object
-      required: [results, query, count]
-      description: "GET /items/search returns results wrapped with query echo and count"
-      properties:
-        results:
-          type: array
-          items:
-            $ref: "#/components/schemas/Item"
-        query:
-          type: string
-          example: "Item"
-        count:
-          type: integer
-          example: 2
-
-    CreateItemRequest:
-      type: object
-      required: [name, price]
-      properties:
-        name:
-          type: string
-          example: "New Item"
-        price:
-          type: number
-          format: float
-          example: 19.99
-        category:
-          type: string
-          example: "electronics"
-        inStock:
-          type: boolean
-          example: true
-
-    PatchItemRequest:
-      type: object
-      description: "Partial update — any subset of item fields"
-      properties:
         name:
           type: string
         price:
           type: number
-          format: float
         category:
           type: string
         inStock:
           type: boolean
 
-    ItemNotFoundError:
-      type: object
-      required: [error, id]
-      properties:
-        error:
-          type: string
-          example: "Item not found"
-        id:
-          type: integer
-          example: 999
-
-    # --- Category schemas ---
     Category:
       type: object
-      required: [id, name, slug, itemCount]
+      required: [id, name]
       properties:
         id:
           type: integer
-          example: 1
         name:
           type: string
-          example: "Electronics"
         slug:
           type: string
-          example: "electronics"
-        itemCount:
-          type: integer
-          example: 15
 
-    CategoryListResponse:
-      type: object
-      required: [categories, total]
-      description: "GET /categories returns categories wrapped in object with total"
-      properties:
-        categories:
-          type: array
-          items:
-            $ref: "#/components/schemas/Category"
-        total:
-          type: integer
-          example: 3
-
-    CategoryItemsResponse:
-      type: object
-      required: [category, items, count]
-      description: "GET /categories/:id/items returns items with category name and count"
-      properties:
-        category:
-          type: string
-          example: "Electronics"
-        items:
-          type: array
-          items:
-            type: object
-            required: [id, name, price]
-            properties:
-              id:
-                type: integer
-                example: 101
-              name:
-                type: string
-                example: "Laptop"
-              price:
-                type: number
-                format: float
-                example: 999.99
-        count:
-          type: integer
-          example: 2
-
-    CreateCategoryRequest:
-      type: object
-      required: [name]
-      properties:
-        name:
-          type: string
-          example: "Electronics"
-        slug:
-          type: string
-          description: "Optional — auto-generated from name if omitted"
-          example: "electronics"
-
-    CategoryNotFoundError:
-      type: object
-      required: [error, id]
-      properties:
-        error:
-          type: string
-          example: "Category not found"
-        id:
-          type: integer
-          example: 999
-
-    # --- User schemas ---
     UserPublic:
       type: object
       required: [id, username, role]
-      description: "GET /users/:id returns public user info (email excluded)"
       properties:
         id:
           type: integer
-          example: 1
         username:
           type: string
-          example: "john_doe"
         role:
           type: string
-          example: "admin"
 
-    UserFull:
+    UserProfile:
       type: object
       required: [id, username, email, role]
-      description: "GET /users/:id/profile returns full user info including email"
       properties:
         id:
           type: integer
-          example: 1
         username:
           type: string
-          example: "john_doe"
         email:
           type: string
           format: email
-          example: "john@example.com"
         role:
           type: string
-          example: "admin"
 
-    UserNotFoundError:
-      type: object
-      required: [error, id]
-      properties:
-        error:
-          type: string
-          example: "User not found"
-        id:
-          type: integer
-          example: 999
-
-    # --- Generic error ---
     Error:
       type: object
-      required: [error]
       properties:
-        error:
+        message:
           type: string
-          example: "Validation error"
