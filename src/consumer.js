@@ -1,5 +1,6 @@
 // src/consumer.js
 // Consumer client for pact-provider-demo API
+// Updated: API client functions for pact-provider-demo
 
 import axios from "axios";
 
