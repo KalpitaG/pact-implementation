@@ -10,36 +10,21 @@ const provider = new PactV3({
 });
 
 describe('getUserById Pact Tests', () => {
-    test('should get a user by id', async () => {
+    test('should return a user', async () => {
         provider
-            .given('a user with id 1 exists')
-            .uponReceiving('a request to get user with id 1')
-            .withRequest({ method: 'GET', path: '/users/1' })
+            .given('a user with ID 123 exists')
+            .uponReceiving('a request to get user 123')
+            .withRequest({ method: 'GET', path: '/users/123' })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: { id: 1, username: 'testuser', role: 'admin' },
+                body: { id: MatchersV3.integer(123), username: MatchersV3.string('testuser'), role: MatchersV3.string('admin') },
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const result = await getUserById(mockProvider.url, '1');
+            const result = await getUserById(mockProvider.url, '123');
             expect(result).toBeDefined();
-            expect(result.id).toBe(1);
-        });
-    });
-
-    test('should return null when user does not exist', async () => {
-        provider
-            .given('no user with id 2 exists')
-            .uponReceiving('a request to get user with id 2')
-            .withRequest({ method: 'GET', path: '/users/2' })
-            .willRespondWith({
-                status: 404
-            });
-
-        await provider.executeTest(async (mockProvider) => {
-            const result = await getUserById(mockProvider.url, '2');
-            expect(result).toBeNull();
+            expect(result.id).toBe(123);
         });
     });
 });

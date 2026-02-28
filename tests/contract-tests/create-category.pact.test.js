@@ -14,11 +14,11 @@ describe('createCategory Pact Tests', () => {
         provider
             .given('no categories exist')
             .uponReceiving('a request to create a new category')
-            .withRequest({ method: 'POST', path: '/categories', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'Electronics' }) })
+            .withRequest({ method: 'POST', path: '/categories', headers: { 'Content-Type': 'application/json' }, body: { name: 'Electronics' } })
             .willRespondWith({
                 status: 201,
                 headers: { 'Content-Type': 'application/json' },
-                body: { id: 1, name: 'Electronics' },
+                body: { id: MatchersV3.integer(1), name: MatchersV3.string('Electronics') },
             });
 
         await provider.executeTest(async (mockProvider) => {

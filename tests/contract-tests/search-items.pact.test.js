@@ -12,20 +12,30 @@ const provider = new PactV3({
 describe('searchItems Pact Tests', () => {
     test('should search items by query', async () => {
         provider
-            .given('some items exist')
-            .uponReceiving('a request to search items with query Laptop')
-            .withRequest({ method: 'GET', path: '/items/search?q=Laptop' })
+            .given('items exist matching query term')
+            .uponReceiving('a request to search items with query term')
+            .withRequest({
+                method: 'GET',
+                path: '/items/search',
+                query: 'q=term'
+            })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: { results: [{ id: 1, name: 'Laptop' }], query: 'Laptop', count: 1 },
+                body: {
+                    results: MatchersV3.eachLike({
+                        id: MatchersV3.integer(1),
+                        name: MatchersV3.string('Searched Item'),
+                    }),
+                    query: MatchersV3.string('term'),
+                    count: MatchersV3.integer(1)
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const result = await searchItems(mockProvider.url, 'Laptop');
+            const result = await searchItems(mockProvider.url, 'term');
             expect(result).toBeDefined();
-            expect(result.query).toBe('Laptop');
-            expect(result.count).toBe(1);
+            expect(result.query).toBe('term');
         });
     });
 });

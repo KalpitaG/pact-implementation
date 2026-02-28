@@ -12,19 +12,19 @@ const provider = new PactV3({
 describe('updateItem Pact Tests', () => {
     test('should update an existing item', async () => {
         provider
-            .given('an item with id 1 exists')
-            .uponReceiving('a request to update item with id 1')
-            .withRequest({ method: 'PATCH', path: '/items/1', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ price: 1600 }) })
+            .given('an item with ID 123 exists')
+            .uponReceiving('a request to update item 123')
+            .withRequest({ method: 'PATCH', path: '/items/123', headers: { 'Content-Type': 'application/json' }, body: { name: 'New Laptop Name' } })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: { id: 1, name: 'Laptop', price: 1600 },
+                body: { id: MatchersV3.integer(123), name: MatchersV3.string('New Laptop Name'), price: MatchersV3.integer(1200) },
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const result = await updateItem(mockProvider.url, '1', { price: 1600 });
+            const result = await updateItem(mockProvider.url, '123', { name: 'New Laptop Name' });
             expect(result).toBeDefined();
-            expect(result.price).toBe(1600);
+            expect(result.name).toBe('New Laptop Name');
         });
     });
 });

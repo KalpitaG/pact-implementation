@@ -14,11 +14,11 @@ describe('createItem Pact Tests', () => {
         provider
             .given('no items exist')
             .uponReceiving('a request to create a new item')
-            .withRequest({ method: 'POST', path: '/items', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name: 'Laptop', price: 1200 }) })
+            .withRequest({ method: 'POST', path: '/items', headers: { 'Content-Type': 'application/json' }, body: { name: 'Laptop', price: 1200 } })
             .willRespondWith({
                 status: 201,
                 headers: { 'Content-Type': 'application/json' },
-                body: { id: 1, name: 'Laptop', price: 1200 },
+                body: { id: MatchersV3.integer(1), name: MatchersV3.string('Laptop'), price: MatchersV3.integer(1200) },
             });
 
         await provider.executeTest(async (mockProvider) => {

@@ -10,17 +10,17 @@ const provider = new PactV3({
 });
 
 describe('deleteItem Pact Tests', () => {
-    test('should delete an existing item', async () => {
+    test('should delete an item', async () => {
         provider
-            .given('an item with id 1 exists')
-            .uponReceiving('a request to delete item with id 1')
-            .withRequest({ method: 'DELETE', path: '/items/1' })
+            .given('an item with ID 123 exists')
+            .uponReceiving('a request to delete item 123')
+            .withRequest({ method: 'DELETE', path: '/items/123' })
             .willRespondWith({
-                status: 204,
+                status: 204
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const result = await deleteItem(mockProvider.url, '1');
+            const result = await deleteItem(mockProvider.url, '123');
             expect(result).toBe(204);
         });
     });

@@ -10,7 +10,7 @@ const provider = new PactV3({
 });
 
 describe('listCategories Pact Tests', () => {
-    test('should list categories', async () => {
+    test('should return a list of categories', async () => {
         provider
             .given('no categories exist')
             .uponReceiving('a request to list categories')

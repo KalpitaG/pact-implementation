@@ -12,19 +12,25 @@ const provider = new PactV3({
 describe('getItem Pact Tests', () => {
     test('should get an item by id', async () => {
         provider
-            .given('an item with id 1 exists')
-            .uponReceiving('a request to get item with id 1')
-            .withRequest({ method: 'GET', path: '/items/1' })
+            .given('an item with id 123 exists')
+            .uponReceiving('a request to get item 123')
+            .withRequest({
+                method: 'GET',
+                path: '/items/123',
+            })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: { id: 1, name: 'Laptop', price: 1200 },
+                body: {
+                    id: MatchersV3.integer(123),
+                    name: MatchersV3.string('Example Item'),
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
-            const result = await getItem(mockProvider.url, '1');
+            const result = await getItem(mockProvider.url, '123');
             expect(result).toBeDefined();
-            expect(result.id).toBe(1);
+            expect(result.id).toBe(123);
         });
     });
 });
