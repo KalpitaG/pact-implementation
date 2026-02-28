@@ -1,98 +1,167 @@
 // src/consumer.js
+// Consumer client for pact-provider-demo API
+// Each function matches a real provider endpoint exactly.
+
 import axios from "axios";
 
-// GET all
-export async function listItems(baseUrl) {
-    const res = await axios.get(`${baseUrl}/items`);
-    return res.data;
+// ===========================================================================
+// ITEMS
+// ===========================================================================
+
+/**
+ * GET /items — returns { items: [...], total: N }
+ * Optional query params: category, inStock
+ */
+export async function listItems(baseUrl, { category, inStock } = {}) {
+  const params = new URLSearchParams();
+  if (category) params.append("category", category);
+  if (inStock !== undefined) params.append("inStock", String(inStock));
+
+  const query = params.toString();
+  const url = `${baseUrl}/items${query ? `?${query}` : ""}`;
+  const res = await axios.get(url);
+  return res.data; // { items: [...], total: N }
 }
 
-// GET by id
+/**
+ * GET /items/:id — returns single Item object
+ */
 export async function getItem(baseUrl, id) {
-    const res = await axios.get(`${baseUrl}/items/${id}`);
-    return res.data;
+  const res = await axios.get(`${baseUrl}/items/${id}`);
+  return res.data;
 }
 
-// POST create
-export async function createItem(baseUrl, { name, price }) {
-    const res = await axios.post(`${baseUrl}/items`, { name, price });
-    return res.data;
+/**
+ * GET /items/search?q=term — returns { results: [...], query: "...", count: N }
+ * The q parameter is REQUIRED — provider returns 400 without it.
+ */
+export async function searchItems(baseUrl, query) {
+  if (!query) {
+    throw new Error('Search query "q" is required');
+  }
+  const res = await axios.get(
+    `${baseUrl}/items/search?q=${encodeURIComponent(query)}`
+  );
+  return res.data; // { results: [...], query: "...", count: N }
 }
 
-// PUT replace
-export async function replaceItem(baseUrl, id, { name, price }) {
-    const res = await axios.put(`${baseUrl}/items/${id}`, { name, price });
-    return res.data;
+/**
+ * POST /items — returns 201 with created Item
+ * Requires name and price in body.
+ */
+export async function createItem(baseUrl, { name, price, category, inStock }) {
+  const res = await axios.post(`${baseUrl}/items`, {
+    name,
+    price,
+    category,
+    inStock,
+  });
+  return res.data;
 }
 
-// PATCH update
+/**
+ * PUT /items/:id — full replace, returns 200 with updated Item
+ * Requires name and price in body.
+ */
+export async function replaceItem(
+  baseUrl,
+  id,
+  { name, price, category, inStock }
+) {
+  const res = await axios.put(`${baseUrl}/items/${id}`, {
+    name,
+    price,
+    category,
+    inStock,
+  });
+  return res.data;
+}
+
+/**
+ * PATCH /items/:id — partial update, returns 200 with updated Item
+ */
 export async function updateItem(baseUrl, id, patch) {
-    const res = await axios.patch(`${baseUrl}/items/${id}`, patch);
-    return res.data;
+  const res = await axios.patch(`${baseUrl}/items/${id}`, patch);
+  return res.data;
 }
 
-// DELETE
+/**
+ * DELETE /items/:id — returns 204 (no content) on success, 404 if not found
+ */
 export async function deleteItem(baseUrl, id) {
-    const res = await axios.delete(`${baseUrl}/items/${id}`);
-    return res.status; // should be 204
+  const res = await axios.delete(`${baseUrl}/items/${id}`);
+  return res.status; // 204
 }
 
-// GET user by ID
-export async function getUserById(baseUrl, userId) {
-    try {
-        const res = await axios.get(`${baseUrl}/users/${userId}`);
-        return res.data;
-    } catch (error) {
-        if (error.response && error.response.status === 404) {
-            return null;
-        }
-        throw new Error(`Failed to get user: ${error.response?.status || error.message}`);
-    }
-}
+// ===========================================================================
+// CATEGORIES
+// ===========================================================================
 
-// Search items by name or price range
-export async function searchItems(baseUrl, { q, minPrice, maxPrice } = {}) {
-    const params = new URLSearchParams();
-    if (q) params.append('q', q);
-    if (minPrice !== undefined) params.append('minPrice', minPrice);
-    if (maxPrice !== undefined) params.append('maxPrice', maxPrice);
-    
-    const queryString = params.toString();
-    const url = `${baseUrl}/items/search${queryString ? `?${queryString}` : ''}`;
-    
-    const res = await axios.get(url);
-    return res.data;
-}
-
-// Get item statistics - aggregated data
-export async function getItemStats(baseUrl) {
-    const res = await axios.get(`${baseUrl}/items/stats`);
-    return res.data;
-}
-
-
-// CATEGORIES API - New feature for organizing items
-
-// GET all categories
+/**
+ * GET /categories — returns { categories: [...], total: N }
+ */
 export async function listCategories(baseUrl) {
-    const res = await axios.get(`${baseUrl}/categories`);
-    return res.data;
+  const res = await axios.get(`${baseUrl}/categories`);
+  return res.data; // { categories: [...], total: N }
 }
 
-// GET category by ID
+/**
+ * GET /categories/:id — returns single Category object
+ */
 export async function getCategoryById(baseUrl, categoryId) {
-    const res = await axios.get(`${baseUrl}/categories/${categoryId}`);
-    return res.data;
+  const res = await axios.get(`${baseUrl}/categories/${categoryId}`);
+  return res.data;
 }
 
-// POST create category
-export async function createCategory(baseUrl, { name, description }) {
-    const res = await axios.post(`${baseUrl}/categories`, { name, description });
-    return res.data;
-}
-
-// GET items in a category
+/**
+ * GET /categories/:id/items — returns { category: "name", items: [...], count: N }
+ */
 export async function getItemsByCategory(baseUrl, categoryId) {
-    const res = await axios.get(`${baseUrl}/categories/${categoryId}/items`);
-    return res.data;
+  const res = await axios.get(`${baseUrl}/categories/${categoryId}/items`);
+  return res.data; // { category: "Electronics", items: [...], count: N }
+}
+
+/**
+ * POST /categories — returns 201 with created Category
+ * Requires name. Slug is auto-generated if not provided.
+ */
+export async function createCategory(baseUrl, { name, slug }) {
+  const res = await axios.post(`${baseUrl}/categories`, { name, slug });
+  return res.data;
+}
+
+// ===========================================================================
+// USERS
+// ===========================================================================
+
+/**
+ * GET /users/:id — returns public user info (email excluded for privacy)
+ * Returns { id, username, role } — NOT name or email.
+ */
+export async function getUserById(baseUrl, userId) {
+  try {
+    const res = await axios.get(`${baseUrl}/users/${userId}`);
+    return res.data; // { id, username, role }
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+/**
+ * GET /users/:id/profile — returns full user profile INCLUDING email
+ * Returns { id, username, email, role }
+ */
+export async function getUserProfile(baseUrl, userId) {
+  try {
+    const res = await axios.get(`${baseUrl}/users/${userId}/profile`);
+    return res.data; // { id, username, email, role }
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      return null;
+    }
+    throw error;
+  }
 }
