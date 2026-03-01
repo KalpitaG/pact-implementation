@@ -20,14 +20,14 @@ describe('Categories API Contract', () => {
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: {
+                body: like({
                     categories: eachLike({
                         id: integer(1),
                         name: string('Electronics'),
                         slug: string('electronics')
                     }),
                     total: integer(1)
-                }
+                })
             });
 
         await provider.executeTest(async (mockProvider) => {
@@ -45,50 +45,51 @@ describe('Categories API Contract', () => {
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: {
+                body: like({
                     id: integer(1),
                     name: string('Electronics'),
                     slug: string('electronics')
-                }
+                })
             });
 
         await provider.executeTest(async (mockProvider) => {
             const result = await getCategoryById(mockProvider.url, 1);
             expect(result).toBeDefined();
-            expect(result.id).toBe(1);
+            expect(result.id).toEqual(1);
         });
     });
 
-    test('get items by category ID', async () => {
+    test('get items for a specific category', async () => {
         provider
             .given('category 1 exists with items')
-            .uponReceiving('a request to get items by category ID')
+            .uponReceiving('a request to get items for a specific category')
             .withRequest({ method: 'GET', path: '/categories/1/items' })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: {
+                body: like({
                     category: string('Electronics'),
                     items: eachLike({
                         id: integer(1),
-                        name: string('Laptop')
+                        name: string('Widget')
                     }),
                     count: integer(1)
-                }
+                })
             });
 
         await provider.executeTest(async (mockProvider) => {
             const result = await getItemsByCategory(mockProvider.url, 1);
             expect(result).toBeDefined();
-            expect(result.category).toBe('Electronics');
+            expect(result.category).toEqual('Electronics');
             expect(result.items.length).toBeGreaterThan(0);
         });
     });
 
     test('create a new category', async () => {
         const newCategory = { name: 'New Category', slug: 'new-category' };
+
         provider
-            .given('the categories API is available')
+            .given('the categories API is available for creation')
             .uponReceiving('a request to create a new category')
             .withRequest({
                 method: 'POST',
@@ -99,18 +100,18 @@ describe('Categories API Contract', () => {
             .willRespondWith({
                 status: 201,
                 headers: { 'Content-Type': 'application/json' },
-                body: {
-                    id: integer(100),
-                    name: string('New Category'),
-                    slug: string('new-category')
-                }
+                body: like({
+                    id: integer(10),
+                    name: string(newCategory.name),
+                    slug: string(newCategory.slug)
+                })
             });
 
         await provider.executeTest(async (mockProvider) => {
             const result = await createCategory(mockProvider.url, newCategory);
             expect(result).toBeDefined();
             expect(result.id).toBeDefined();
-            expect(result.name).toBe(newCategory.name);
+            expect(result.name).toEqual(newCategory.name);
         });
     });
 });
