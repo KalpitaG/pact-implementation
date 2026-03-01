@@ -68,7 +68,7 @@ jobs:
       - name: Run contract tests to generate pact files
         run: |
           NODE_OPTIONS='--experimental-vm-modules' npx jest tests/contract-tests/ \
-            --testPathPattern='\.pact\.test\.' \
+            --testPathPatterns='\.pact\.test\.' \
             --forceExit
 
       - name: Publish Pact to Pactflow
