@@ -88,4 +88,28 @@ describe('Users API Contract', () => {
             expect(result).toBeNull();
         });
     });
+
+    test('get public user info by ID for an admin user', async () => {
+        provider
+            .given('admin user 2 exists')
+            .uponReceiving('a request to get public info for an admin user by ID')
+            .withRequest({ method: 'GET', path: '/users/2' })
+            .willRespondWith({
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+                body: like({
+                    id: integer(2),
+                    username: string('adminuser'),
+                    role: string('admin')
+                })
+            });
+
+        await provider.executeTest(async (mockProvider) => {
+            const result = await getUserById(mockProvider.url, '2');
+            expect(result).toBeDefined();
+            expect(result.id).toEqual(2);
+            expect(result.username).toEqual('adminuser');
+            expect(result.role).toEqual('admin');
+        });
+    });
 });
