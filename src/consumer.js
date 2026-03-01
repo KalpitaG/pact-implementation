@@ -1,6 +1,5 @@
 // src/consumer.js
 // Consumer client for pact-provider-demo API
-// This module provides functions to interact with the API endpoints defined in the provider.
 
 import axios from "axios";
 
