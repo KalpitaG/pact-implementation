@@ -114,4 +114,18 @@ describe('Categories API Contract', () => {
             expect(result.name).toEqual(newCategory.name);
         });
     });
+
+    test('get a non-existent category by ID', async () => {
+        provider
+            .given('category 999 does not exist')
+            .uponReceiving('a request to get a non-existent category by ID')
+            .withRequest({ method: 'GET', path: '/categories/999' })
+            .willRespondWith({
+                status: 404
+            });
+
+        await provider.executeTest(async (mockProvider) => {
+            await expect(getCategoryById(mockProvider.url, 999)).rejects.toThrow();
+        });
+    });
 });
