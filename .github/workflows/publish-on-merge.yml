@@ -1,12 +1,23 @@
 # =============================================================================
-# Publish Pact on Merge to Main
+# Publish Pact on Merge
 # =============================================================================
 #
-# FLOW:
-#   1. Triggers when contract tests are merged into main
-#   2. Runs tests to generate fresh pact files
-#   3. Publishes to Pactflow tagged as branch=main
-#   4. This is what can-i-deploy checks against
+# TWO PUBLISH EVENTS:
+#
+#   Event 1 — AI PR merged into feature branch:
+#     Trigger: push to any branch with contract test changes
+#     Action: publish pact tagged with the feature branch name
+#     Purpose: enables can-i-deploy checks against feature branch
+#
+#   Event 2 — Feature branch merged into main:
+#     Trigger: push to main with contract test changes
+#     Action: publish pact tagged as "main"
+#     Purpose: this is the production contract that can-i-deploy uses
+#
+# WHY NOT publish during test generation:
+#   The AI PR hasn't been reviewed yet. Publishing unreviewed contracts
+#   would pollute the broker with potentially incorrect expectations.
+#   Publish only happens AFTER a human merges.
 #
 # =============================================================================
 
@@ -14,14 +25,12 @@ name: Publish Pact on Merge
 
 on:
   push:
-    branches:
-      - main
     paths:
       - 'tests/contract-tests/**'
 
 jobs:
   publish-pact:
-    name: Publish Pact to Pactflow (main)
+    name: Publish Pact to Pactflow
     runs-on: ubuntu-latest
 
     steps:
@@ -38,25 +47,50 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Determine branch context
+        id: branch
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          echo "name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+          if [ "$BRANCH_NAME" = "main" ]; then
+            echo "is_main=true" >> $GITHUB_OUTPUT
+            echo "publish_branch=main" >> $GITHUB_OUTPUT
+            echo "📌 Publishing to MAIN (production contract)"
+          else
+            echo "is_main=false" >> $GITHUB_OUTPUT
+            echo "publish_branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+            echo "📌 Publishing to feature branch: $BRANCH_NAME"
+          fi
+
       - name: Run contract tests to generate pact files
         run: |
           NODE_OPTIONS='--experimental-vm-modules' npx jest tests/contract-tests/ \
             --testPathPattern='\.pact\.test\.' \
             --forceExit
-        continue-on-error: true
 
-      - name: Publish Pact to Pactflow (main branch)
+      - name: Publish Pact to Pactflow
         env:
           PACTFLOW_BASE_URL: ${{ secrets.PACTFLOW_BASE_URL }}
           PACTFLOW_TOKEN: ${{ secrets.PACTFLOW_TOKEN }}
-          GITHUB_SHA: ${{ github.sha }}
         run: |
-          if [ -d "./pacts" ] && [ -n "$(ls -A ./pacts 2>/dev/null)" ]; then
-            echo "Publishing pacts to Pactflow as main branch..."
-            ls -la ./pacts/
-            npm run ai:publish:pact:main
-            echo "✅ Pact published successfully tagged as main"
-          else
-            echo "⚠️ No pact files found - skipping publish"
+          if [ ! -d "./pacts" ] || [ -z "$(ls -A ./pacts 2>/dev/null)" ]; then
+            echo "❌ No pact files found in ./pacts — tests may not have generated output"
             exit 1
           fi
+
+          echo "📦 Pact files found:"
+          ls -la ./pacts/
+
+          PUBLISH_BRANCH="${{ steps.branch.outputs.publish_branch }}"
+          VERSION="${{ github.sha }}"
+
+          echo "Publishing with version=$VERSION branch=$PUBLISH_BRANCH"
+
+          npx pact-broker publish ./pacts \
+            --consumer-app-version="$VERSION" \
+            --branch="$PUBLISH_BRANCH" \
+            --broker-base-url="$PACTFLOW_BASE_URL" \
+            --broker-token="$PACTFLOW_TOKEN"
+
+          echo "✅ Pact published successfully (branch: $PUBLISH_BRANCH)"
