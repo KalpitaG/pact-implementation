@@ -216,6 +216,23 @@ paths:
         "400":
           description: Missing required query parameter q
 
+  /items/count:
+    get:
+      summary: Get total item count
+      operationId: getItemCount
+      tags: [Items]
+      responses:
+        "200":
+          description: Total number of items
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [count]
+                properties:
+                  count:
+                    type: integer
+
   # =========================================================================
   # CATEGORIES
   # =========================================================================
