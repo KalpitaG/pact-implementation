@@ -65,13 +65,35 @@ jobs:
             echo "📌 Publishing to feature branch: $BRANCH_NAME"
           fi
 
-      - name: Run contract tests to generate pact files
+      - name: Run ONLY changed contract tests to generate pact files
+        id: run_tests
         run: |
-          NODE_OPTIONS='--experimental-vm-modules' npx jest tests/contract-tests/ \
-            --testPathPatterns='\.pact\.test\.' \
-            --forceExit
+          # Get test files that changed in this push (the merge commit)
+          CHANGED_TESTS=$(git diff --name-only HEAD~1 HEAD -- 'tests/contract-tests/' | grep '\.pact\.test\.' | tr '\n' ' ')
+
+          if [ -z "$CHANGED_TESTS" ]; then
+            echo "⚠️ No contract test files changed in this push"
+            echo "has_pacts=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "📋 Changed test files:"
+          echo "$CHANGED_TESTS"
+
+          # Clear stale pact files from previous runs
+          rm -rf ./pacts
+
+          # Run ONLY the changed test files — not the entire test suite
+          NODE_OPTIONS='--experimental-vm-modules' npx jest $CHANGED_TESTS --forceExit
+
+          if [ -d "./pacts" ] && [ -n "$(ls -A ./pacts 2>/dev/null)" ]; then
+            echo "has_pacts=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_pacts=false" >> $GITHUB_OUTPUT
+          fi
 
       - name: Publish Pact to Pactflow
+        if: steps.run_tests.outputs.has_pacts == 'true'
         env:
           PACTFLOW_BASE_URL: ${{ secrets.PACTFLOW_BASE_URL }}
           PACTFLOW_TOKEN: ${{ secrets.PACTFLOW_TOKEN }}
