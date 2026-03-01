@@ -31,6 +31,15 @@ export async function getItem(baseUrl, id) {
 }
 
 /**
+ * GET /items/count — returns { count: N }
+ * Simple count of all items in the store.
+ */
+export async function getItemCount(baseUrl) {
+  const res = await axios.get(`${baseUrl}/items/count`);
+  return res.data; // { count: N }
+}
+
+/**
  * GET /items/search?q=term — returns { results: [...], query: "...", count: N }
  * The q parameter is REQUIRED — provider returns 400 without it.
  */

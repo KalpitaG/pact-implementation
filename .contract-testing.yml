@@ -1,4 +1,4 @@
 pactflow_name: pact-implementation
 consumer_of:
   - pactflow_name: pact-provider-demo
-    openapi_spec: openapi/openapi.yaml
+    openapi_spec: oas/openapi.yaml
