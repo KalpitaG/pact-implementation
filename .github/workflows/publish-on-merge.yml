@@ -77,14 +77,32 @@ jobs:
             exit 0
           fi
 
-          echo "📋 Changed test files:"
-          echo "$CHANGED_TESTS"
+          echo "📋 Changed test files: $CHANGED_TESTS"
 
-          # Clear stale pact files from previous runs
+          # Clear ALL pact files to ensure clean slate
           rm -rf ./pacts
 
-          # Run ONLY the changed test files — not the entire test suite
-          NODE_OPTIONS='--experimental-vm-modules' npx jest $CHANGED_TESTS --forceExit
+          # Create isolated jest config that ONLY runs the specified files
+          # This prevents Jest from discovering other test files via testMatch
+          cat > jest.publish.config.js << 'JESTCONFIG'
+          export default {
+            transform: {},
+            testMatch: [],
+            testPathIgnorePatterns: [],
+          };
+          JESTCONFIG
+
+          # Run ONLY the changed test files with isolated config
+          NODE_OPTIONS='--experimental-vm-modules' npx jest \
+            --config=jest.publish.config.js \
+            $CHANGED_TESTS \
+            --forceExit
+
+          # Clean up temp config
+          rm -f jest.publish.config.js
+
+          echo "📦 Pact files generated:"
+          ls -la ./pacts/ 2>/dev/null || echo "  (none)"
 
           if [ -d "./pacts" ] && [ -n "$(ls -A ./pacts 2>/dev/null)" ]; then
             echo "has_pacts=true" >> $GITHUB_OUTPUT
