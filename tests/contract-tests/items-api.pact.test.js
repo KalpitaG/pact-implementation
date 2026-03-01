@@ -74,6 +74,39 @@ describe('Items API Contract', () => {
         });
     });
 
+    test('get items filtered by inStock status only', async () => {
+        provider
+            .given('items exist in the inventory with specific stock status')
+            .uponReceiving('a request to get items filtered by inStock status only')
+            .withRequest({
+                method: 'GET',
+                path: '/items',
+                query: { inStock: string('true') }
+            })
+            .willRespondWith({
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+                body: {
+                    items: eachLike({
+                        id: integer(2),
+                        name: string('Gadget'),
+                        price: like(19.99),
+                        category: string('Electronics'),
+                        inStock: boolean(true)
+                    }),
+                    total: integer(1)
+                },
+            });
+
+        await provider.executeTest(async (mockProvider) => {
+            const result = await listItems(mockProvider.url, { inStock: true });
+            expect(result).toBeDefined();
+            expect(result.items).toBeInstanceOf(Array);
+            expect(result.items.length).toBeGreaterThan(0);
+            expect(result.total).toBeDefined();
+        });
+    });
+
     test('get a single item by ID', async () => {
         provider
             .given('item with ID 1 exists')
