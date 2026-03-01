@@ -25,6 +25,8 @@ name: Publish Pact on Merge
 
 on:
   push:
+    branches-ignore:
+      - 'contract-tests/**'    # Never publish from AI working branches
     paths:
       - 'tests/contract-tests/**'
 
