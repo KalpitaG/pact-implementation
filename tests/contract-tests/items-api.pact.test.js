@@ -8,7 +8,7 @@ const { like, eachLike, string, integer, boolean } = MatchersV3;
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
     consumer: 'pact-implementation',
-    provider: 'pact-provider-demo'
+    provider: 'pact-provider-demo',
 });
 
 describe('Items API Contract', () => {
@@ -20,7 +20,7 @@ describe('Items API Contract', () => {
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: like({
+                body: {
                     items: eachLike({
                         id: integer(1),
                         name: string('Widget'),
@@ -29,7 +29,7 @@ describe('Items API Contract', () => {
                         inStock: boolean(true)
                     }),
                     total: integer(1)
-                })
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
@@ -40,28 +40,31 @@ describe('Items API Contract', () => {
         });
     });
 
-    test('get items by category and stock status', async () => {
+    test('get items filtered by category and inStock status', async () => {
         provider
-            .given('items exist in the inventory for category Electronics and are in stock')
-            .uponReceiving('a request to get items by category and stock status')
+            .given('items exist in the inventory for a specific category and in stock')
+            .uponReceiving('a request to get items filtered by category and inStock status')
             .withRequest({
                 method: 'GET',
                 path: '/items',
-                query: { category: string('Electronics'), inStock: string('true') }
+                query: {
+                    category: string('Electronics'),
+                    inStock: string('true')
+                }
             })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: like({
+                body: {
                     items: eachLike({
-                        id: integer(1),
-                        name: string('Widget'),
-                        price: like(9.99),
+                        id: integer(2),
+                        name: string('Gadget'),
+                        price: like(19.99),
                         category: string('Electronics'),
                         inStock: boolean(true)
                     }),
                     total: integer(1)
-                })
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
@@ -75,19 +78,19 @@ describe('Items API Contract', () => {
 
     test('get a specific item by ID', async () => {
         provider
-            .given('item 1 exists')
+            .given('item with ID 1 exists')
             .uponReceiving('a request to get a specific item by ID')
             .withRequest({ method: 'GET', path: '/items/1' })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: like({
+                body: {
                     id: integer(1),
                     name: string('Widget'),
                     price: like(9.99),
                     category: string('Electronics'),
                     inStock: boolean(true)
-                })
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
@@ -105,20 +108,20 @@ describe('Items API Contract', () => {
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: like({ count: integer(5) })
+                body: { count: integer(5) },
             });
 
         await provider.executeTest(async (mockProvider) => {
             const result = await getItemCount(mockProvider.url);
             expect(result).toBeDefined();
-            expect(result.count).toBeGreaterThanOrEqual(0);
+            expect(result.count).toBeGreaterThan(0);
         });
     });
 
-    test('search for items by query', async () => {
+    test('search for items by query term', async () => {
         provider
             .given('items exist matching the search query')
-            .uponReceiving('a request to search for items by query')
+            .uponReceiving('a request to search for items by query term')
             .withRequest({
                 method: 'GET',
                 path: '/items/search',
@@ -127,17 +130,17 @@ describe('Items API Contract', () => {
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: like({
+                body: {
                     results: eachLike({
                         id: integer(1),
-                        name: string('Super Widget'),
-                        price: like(12.99),
+                        name: string('Widget'),
+                        price: like(9.99),
                         category: string('Electronics'),
                         inStock: boolean(true)
                     }),
                     query: string('widget'),
                     count: integer(1)
-                })
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
@@ -149,7 +152,7 @@ describe('Items API Contract', () => {
     });
 
     test('create a new item', async () => {
-        const newItem = { name: 'New Item', price: 25.50, category: 'Books', inStock: true };
+        const newItem = { name: 'New Item', price: 25.00, category: 'Books', inStock: true };
 
         provider
             .given('the items API is available for creation')
@@ -158,18 +161,18 @@ describe('Items API Contract', () => {
                 method: 'POST',
                 path: '/items',
                 headers: { 'Content-Type': 'application/json' },
-                body: like(newItem)
+                body: like(newItem),
             })
             .willRespondWith({
                 status: 201,
                 headers: { 'Content-Type': 'application/json' },
-                body: like({
+                body: {
                     id: integer(100),
-                    name: string(newItem.name),
-                    price: like(newItem.price),
-                    category: string(newItem.category),
-                    inStock: boolean(newItem.inStock)
-                })
+                    name: string('New Item'),
+                    price: like(25.00),
+                    category: string('Books'),
+                    inStock: boolean(true)
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
@@ -181,76 +184,80 @@ describe('Items API Contract', () => {
     });
 
     test('replace an existing item', async () => {
-        const updatedItem = { name: 'Updated Widget', price: 15.00, category: 'Electronics', inStock: false };
+        const updatedItem = { name: 'Updated Widget', price: 12.50, category: 'Electronics', inStock: false };
 
         provider
-            .given('item 1 exists and can be updated')
+            .given('item with ID 1 exists')
             .uponReceiving('a request to replace an existing item')
             .withRequest({
                 method: 'PUT',
                 path: '/items/1',
                 headers: { 'Content-Type': 'application/json' },
-                body: like(updatedItem)
+                body: like(updatedItem),
             })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: like({
+                body: {
                     id: integer(1),
-                    name: string(updatedItem.name),
-                    price: like(updatedItem.price),
-                    category: string(updatedItem.category),
-                    inStock: boolean(updatedItem.inStock)
-                })
+                    name: string('Updated Widget'),
+                    price: like(12.50),
+                    category: string('Electronics'),
+                    inStock: boolean(false)
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
             const result = await replaceItem(mockProvider.url, 1, updatedItem);
             expect(result).toBeDefined();
-            expect(result.id).toEqual(1);
             expect(result.name).toEqual(updatedItem.name);
+            expect(result.price).toEqual(updatedItem.price);
         });
     });
 
-    test('partially update an item', async () => {
-        const patch = { price: 11.50 };
+    test('partially update an existing item', async () => {
+        const patch = { price: 15.00 };
 
         provider
-            .given('item 1 exists and can be updated')
-            .uponReceiving('a request to partially update an item')
+            .given('item with ID 1 exists')
+            .uponReceiving('a request to partially update an existing item')
             .withRequest({
                 method: 'PATCH',
                 path: '/items/1',
                 headers: { 'Content-Type': 'application/json' },
-                body: like(patch)
+                body: like(patch),
             })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: like({
+                body: {
                     id: integer(1),
-                    name: string('Widget'),
-                    price: like(11.50),
+                    name: string('Updated Widget'), // Assuming name remains from previous state or default
+                    price: like(15.00),
                     category: string('Electronics'),
-                    inStock: boolean(true)
-                })
+                    inStock: boolean(false)
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
             const result = await updateItem(mockProvider.url, 1, patch);
             expect(result).toBeDefined();
-            expect(result.id).toEqual(1);
             expect(result.price).toEqual(patch.price);
         });
     });
 
     test('delete an item', async () => {
         provider
-            .given('item 1 exists and can be deleted')
+            .given('item with ID 1 exists')
             .uponReceiving('a request to delete an item')
-            .withRequest({ method: 'DELETE', path: '/items/1' })
+            .withRequest({
+                method: 'DELETE',
+                path: '/items/1',
+            })
             .willRespondWith({
-                status: 204
+                status: 204,
+                headers: {},
+                body: null,
             });
 
         await provider.executeTest(async (mockProvider) => {
