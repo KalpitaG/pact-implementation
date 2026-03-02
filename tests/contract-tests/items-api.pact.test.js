@@ -36,7 +36,7 @@ describe('Items API Contract', () => {
             const result = await listItems(mockProvider.url);
             expect(result).toBeDefined();
             expect(result.items.length).toBeGreaterThan(0);
-            expect(result.total).toBeDefined();
+            expect(result.total).toBeGreaterThan(0);
         });
     });
 
@@ -66,6 +66,7 @@ describe('Items API Contract', () => {
             expect(result.items.length).toBeGreaterThan(0);
             expect(result.items[0].category).toEqual('Electronics');
             expect(result.items[0].inStock).toEqual(true);
+            expect(result.total).toBeGreaterThan(0);
         });
     });
 
@@ -107,13 +108,13 @@ describe('Items API Contract', () => {
         await provider.executeTest(async (mockProvider) => {
             const result = await getItemCount(mockProvider.url);
             expect(result).toBeDefined();
-            expect(result.count).toBeDefined();
+            expect(result.count).toBeGreaterThan(0);
         });
     });
 
     test('search for items by query', async () => {
         provider
-            .given('items matching 'test' exist')
+            .given('items matching \'test\' exist')
             .uponReceiving('a request to search for items by query')
             .withRequest({ method: 'GET', path: '/items/search', query: { q: string('test') } })
             .willRespondWith({
@@ -135,6 +136,7 @@ describe('Items API Contract', () => {
             expect(result).toBeDefined();
             expect(result.results.length).toBeGreaterThan(0);
             expect(result.query).toEqual('test');
+            expect(result.count).toBeGreaterThan(0);
         });
     });
 
