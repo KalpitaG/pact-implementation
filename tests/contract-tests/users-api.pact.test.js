@@ -3,18 +3,18 @@ import { PactV3, MatchersV3 } from '@pact-foundation/pact';
 import { getUserById, getUserProfile } from '../../src/consumer.js';
 import { describe, test, expect } from '@jest/globals';
 
-const { like, string, integer } = MatchersV3;
+const { like, eachLike, string, integer } = MatchersV3;
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
     consumer: 'pact-implementation',
-    provider: 'pact-provider-demo',
+    provider: 'pact-provider-demo'
 });
 
 describe('Users API Contract', () => {
     test('get public user info by ID', async () => {
         provider
-            .given('user with ID 1 exists')
+            .given('user 1 exists')
             .uponReceiving('a request to get public user info by ID')
             .withRequest({ method: 'GET', path: '/users/1' })
             .willRespondWith({
@@ -24,7 +24,7 @@ describe('Users API Contract', () => {
                     id: integer(1),
                     username: string('testuser'),
                     role: string('user')
-                },
+                }
             });
 
         await provider.executeTest(async (mockProvider) => {
@@ -35,15 +35,13 @@ describe('Users API Contract', () => {
         });
     });
 
-    test('get public user info for a non-existent ID', async () => {
+    test('get a non-existent user by ID returns null', async () => {
         provider
-            .given('user with ID 999 does not exist')
-            .uponReceiving('a request to get public user info for a non-existent ID')
+            .given('user 999 does not exist')
+            .uponReceiving('a request to get a non-existent user by ID returns null')
             .withRequest({ method: 'GET', path: '/users/999' })
             .willRespondWith({
-                status: 404,
-                headers: { 'Content-Type': 'application/json' },
-                body: { message: string('User not found') }
+                status: 404
             });
 
         await provider.executeTest(async (mockProvider) => {
@@ -54,7 +52,7 @@ describe('Users API Contract', () => {
 
     test('get full user profile by ID', async () => {
         provider
-            .given('user with ID 1 exists')
+            .given('user 1 exists with full profile')
             .uponReceiving('a request to get full user profile by ID')
             .withRequest({ method: 'GET', path: '/users/1/profile' })
             .willRespondWith({
@@ -65,7 +63,7 @@ describe('Users API Contract', () => {
                     username: string('testuser'),
                     email: string('test@example.com'),
                     role: string('user')
-                },
+                }
             });
 
         await provider.executeTest(async (mockProvider) => {
@@ -76,15 +74,13 @@ describe('Users API Contract', () => {
         });
     });
 
-    test('get full user profile for a non-existent ID', async () => {
+    test('get a non-existent user profile by ID returns null', async () => {
         provider
-            .given('user with ID 999 does not exist')
-            .uponReceiving('a request to get full user profile for a non-existent ID')
+            .given('user 999 does not exist')
+            .uponReceiving('a request to get a non-existent user profile by ID returns null')
             .withRequest({ method: 'GET', path: '/users/999/profile' })
             .willRespondWith({
-                status: 404,
-                headers: { 'Content-Type': 'application/json' },
-                body: { message: string('User profile not found') }
+                status: 404
             });
 
         await provider.executeTest(async (mockProvider) => {

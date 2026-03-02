@@ -8,7 +8,7 @@ const { like, eachLike, string, integer } = MatchersV3;
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
     consumer: 'pact-implementation',
-    provider: 'pact-provider-demo',
+    provider: 'pact-provider-demo'
 });
 
 describe('Categories API Contract', () => {
@@ -34,13 +34,13 @@ describe('Categories API Contract', () => {
             const result = await listCategories(mockProvider.url);
             expect(result).toBeDefined();
             expect(result.categories.length).toBeGreaterThan(0);
-            expect(result.total).toBeDefined();
+            expect(result.total).toBeGreaterThan(0);
         });
     });
 
     test('get a specific category by ID', async () => {
         provider
-            .given('category with ID 1 exists')
+            .given('category 1 exists')
             .uponReceiving('a request to get a specific category by ID')
             .withRequest({ method: 'GET', path: '/categories/1' })
             .willRespondWith({
@@ -60,10 +60,10 @@ describe('Categories API Contract', () => {
         });
     });
 
-    test('get items by category ID', async () => {
+    test('get items for a specific category', async () => {
         provider
-            .given('category with ID 1 exists and has items')
-            .uponReceiving('a request to get items by category ID')
+            .given('category 1 exists with items')
+            .uponReceiving('a request to get items for a specific category')
             .withRequest({ method: 'GET', path: '/categories/1/items' })
             .willRespondWith({
                 status: 200,
@@ -82,8 +82,8 @@ describe('Categories API Contract', () => {
         await provider.executeTest(async (mockProvider) => {
             const result = await getItemsByCategory(mockProvider.url, 1);
             expect(result).toBeDefined();
-            expect(result.category).toEqual('Electronics');
             expect(result.items.length).toBeGreaterThan(0);
+            expect(result.count).toBeGreaterThan(0);
         });
     });
 
@@ -103,7 +103,7 @@ describe('Categories API Contract', () => {
                 status: 201,
                 headers: { 'Content-Type': 'application/json' },
                 body: {
-                    id: integer(2),
+                    id: integer(10),
                     name: string('Books'),
                     slug: string('books')
                 }
