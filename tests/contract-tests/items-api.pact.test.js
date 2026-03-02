@@ -3,7 +3,7 @@ import { PactV3, MatchersV3 } from '@pact-foundation/pact';
 import { listItems, getItem, getItemCount, searchItems, createItem, replaceItem, updateItem, deleteItem } from '../../src/consumer.js';
 import { describe, test, expect } from '@jest/globals';
 
-const { like, eachLike, string, integer, boolean } = MatchersV3;
+const { like, eachLike, string, integer } = MatchersV3;
 
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
@@ -26,7 +26,7 @@ describe('Items API Contract', () => {
                         name: string('Widget'),
                         price: like(12.99),
                         category: string('Electronics'),
-                        inStock: boolean(true)
+                        inStock: like(true)
                     }),
                     total: integer(1)
                 }
@@ -54,7 +54,7 @@ describe('Items API Contract', () => {
                         name: string('Gadget'),
                         price: like(24.50),
                         category: string('Electronics'),
-                        inStock: boolean(true)
+                        inStock: like(true)
                     }),
                     total: integer(1)
                 }
@@ -82,7 +82,7 @@ describe('Items API Contract', () => {
                     name: string('Widget'),
                     price: like(12.99),
                     category: string('Electronics'),
-                    inStock: boolean(true)
+                    inStock: like(true)
                 }
             });
 
@@ -113,7 +113,7 @@ describe('Items API Contract', () => {
 
     test('search for items by query', async () => {
         provider
-            .given('items matching \'test\' exist')
+            .given('items matching 'test' exist')
             .uponReceiving('a request to search for items by query')
             .withRequest({ method: 'GET', path: '/items/search', query: { q: string('test') } })
             .willRespondWith({
@@ -158,7 +158,7 @@ describe('Items API Contract', () => {
                     name: string('New Item'),
                     price: like(29.99),
                     category: string('Books'),
-                    inStock: boolean(true)
+                    inStock: like(true)
                 }
             });
 
@@ -190,7 +190,7 @@ describe('Items API Contract', () => {
                     name: string('Updated Widget'),
                     price: like(15.00),
                     category: string('Electronics'),
-                    inStock: boolean(false)
+                    inStock: like(false)
                 }
             });
 
@@ -222,7 +222,7 @@ describe('Items API Contract', () => {
                     name: string('Widget'),
                     price: like(13.50),
                     category: string('Electronics'),
-                    inStock: boolean(true)
+                    inStock: like(true)
                 }
             });
 
