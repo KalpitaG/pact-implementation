@@ -136,3 +136,29 @@ jobs:
             --broker-token="$PACTFLOW_TOKEN"
 
           echo "✅ Pact published successfully (branch: $PUBLISH_BRANCH)"
+
+  # ===========================================================================
+  # Deployment Safety: can-i-deploy + record-deployment (main branch only)
+  # ===========================================================================
+  can-i-deploy:
+    name: Can I Deploy?
+    needs: [publish-pact]
+    if: needs.publish-pact.result == 'success' && github.ref == 'refs/heads/main'
+    uses: KalpitaG/ai-contract-testing-demo/.github/workflows/can-i-deploy.yml@main
+    with:
+      pacticipant: pact-implementation
+      version: ${{ github.sha }}
+      environment: production
+      retry_while_unknown: 30
+    secrets: inherit
+
+  record-deployment:
+    name: Record Deployment
+    needs: [can-i-deploy]
+    if: needs.can-i-deploy.outputs.can_deploy == 'true'
+    uses: KalpitaG/ai-contract-testing-demo/.github/workflows/record-deployment.yml@main
+    with:
+      pacticipant: pact-implementation
+      version: ${{ github.sha }}
+      environment: production
+    secrets: inherit
