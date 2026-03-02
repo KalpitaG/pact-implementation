@@ -172,4 +172,4 @@ export async function getUserProfile(baseUrl, userId) {
     }
     throw error;
   }
-}
+}// e2e test
