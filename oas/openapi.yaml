@@ -432,6 +432,9 @@ components:
 
     Error:
       type: object
+      required: [error, id]
       properties:
-        message:
+        error:
           type: string
+        id:
+          type: integer
