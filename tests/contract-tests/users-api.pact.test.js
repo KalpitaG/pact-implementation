@@ -8,40 +8,42 @@ const { like, string, integer } = MatchersV3;
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
     consumer: 'pact-implementation',
-    provider: 'pact-provider-demo'
+    provider: 'pact-provider-demo',
 });
 
 describe('Users API Contract', () => {
-    test('get public user information by ID', async () => {
+    test('get public user info by ID', async () => {
         provider
-            .given('user 1 exists')
-            .uponReceiving('a request to get public user information by ID')
+            .given('user with ID 1 exists')
+            .uponReceiving('a request to get public user info by ID')
             .withRequest({ method: 'GET', path: '/users/1' })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: like({
+                body: {
                     id: integer(1),
-                    username: string('john.doe'),
+                    username: string('testuser'),
                     role: string('user')
-                })
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
             const result = await getUserById(mockProvider.url, 1);
             expect(result).toBeDefined();
             expect(result.id).toEqual(1);
-            expect(result.username).toEqual('john.doe');
+            expect(result.username).toEqual('testuser');
         });
     });
 
-    test('get public user information for a non-existent user', async () => {
+    test('get public user info for a non-existent ID', async () => {
         provider
-            .given('user 999 does not exist')
-            .uponReceiving('a request to get public user information for a non-existent user')
+            .given('user with ID 999 does not exist')
+            .uponReceiving('a request to get public user info for a non-existent ID')
             .withRequest({ method: 'GET', path: '/users/999' })
             .willRespondWith({
-                status: 404
+                status: 404,
+                headers: { 'Content-Type': 'application/json' },
+                body: { message: string('User not found') }
             });
 
         await provider.executeTest(async (mockProvider) => {
@@ -52,35 +54,37 @@ describe('Users API Contract', () => {
 
     test('get full user profile by ID', async () => {
         provider
-            .given('user 1 exists with a profile')
+            .given('user with ID 1 exists')
             .uponReceiving('a request to get full user profile by ID')
             .withRequest({ method: 'GET', path: '/users/1/profile' })
             .willRespondWith({
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },
-                body: like({
+                body: {
                     id: integer(1),
-                    username: string('john.doe'),
-                    email: string('john.doe@example.com'),
+                    username: string('testuser'),
+                    email: string('test@example.com'),
                     role: string('user')
-                })
+                },
             });
 
         await provider.executeTest(async (mockProvider) => {
             const result = await getUserProfile(mockProvider.url, 1);
             expect(result).toBeDefined();
             expect(result.id).toEqual(1);
-            expect(result.email).toEqual('john.doe@example.com');
+            expect(result.email).toEqual('test@example.com');
         });
     });
 
-    test('get full user profile for a non-existent user', async () => {
+    test('get full user profile for a non-existent ID', async () => {
         provider
-            .given('user 999 does not exist with a profile')
-            .uponReceiving('a request to get full user profile for a non-existent user')
+            .given('user with ID 999 does not exist')
+            .uponReceiving('a request to get full user profile for a non-existent ID')
             .withRequest({ method: 'GET', path: '/users/999/profile' })
             .willRespondWith({
-                status: 404
+                status: 404,
+                headers: { 'Content-Type': 'application/json' },
+                body: { message: string('User profile not found') }
             });
 
         await provider.executeTest(async (mockProvider) => {
