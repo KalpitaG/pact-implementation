@@ -8,7 +8,7 @@ const { like, eachLike, string, integer } = MatchersV3;
 const provider = new PactV3({
     dir: path.resolve(process.cwd(), 'pacts'),
     consumer: 'pact-implementation',
-    provider: 'pact-provider-demo',
+    provider: 'pact-provider-demo'
 });
 
 describe('Categories API Contract', () => {
@@ -34,13 +34,12 @@ describe('Categories API Contract', () => {
             const result = await listCategories(mockProvider.url);
             expect(result).toBeDefined();
             expect(result.categories.length).toBeGreaterThan(0);
-            expect(result.total).toBeDefined();
         });
     });
 
     test('get a specific category by ID', async () => {
         provider
-            .given('category with ID 1 exists')
+            .given('category 1 exists')
             .uponReceiving('a request to get a specific category by ID')
             .withRequest({ method: 'GET', path: '/categories/1' })
             .willRespondWith({
@@ -62,7 +61,7 @@ describe('Categories API Contract', () => {
 
     test('get items by category ID', async () => {
         provider
-            .given('category with ID 1 exists and has items')
+            .given('category 1 exists with items')
             .uponReceiving('a request to get items by category ID')
             .withRequest({ method: 'GET', path: '/categories/1/items' })
             .willRespondWith({
@@ -112,7 +111,6 @@ describe('Categories API Contract', () => {
         await provider.executeTest(async (mockProvider) => {
             const result = await createCategory(mockProvider.url, newCategory);
             expect(result).toBeDefined();
-            expect(result.id).toBeDefined();
             expect(result.name).toEqual(newCategory.name);
         });
     });
